@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Generador de Planeamientos — ELMA</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <header class="app-header">
+  <div class="brand">
+    <img src="logo-elma.png" alt="Istituto Figlie di Maria Ausiliatrice" class="brand-logo">
+    <div class="brand-text">
+      <span class="brand-line-1">Istituto Figlie di Maria Ausiliatrice</span>
+      <span class="brand-line-2">Escuela Liceo María Auxiliadora · San José · Costa Rica</span>
+    </div>
+  </div>
+  <div class="actions">
+    <button id="btn-new" title="Nuevo planeamiento">Nuevo</button>
+    <button id="btn-save" title="Guardar (local / con nombre)">Guardar</button>
+    <button id="btn-load" title="Cargar (local / por nombre)">Cargar</button>
+    <button id="btn-preview" title="Previsualizar">Previsualizar</button>
+    <button id="btn-export-word" title="Exportar a Word (.doc)">Exportar Word</button>
+    <button id="btn-print" title="Imprimir / PDF">Imprimir / PDF</button>
+
+    <!-- 📂 Selector de planes guardados (no es panel, queda en el header) -->
+    <select id="plan-picker" style="margin-left:6px; min-width:220px;">
+      <option value="">— Selecciona un planeamiento guardado —</option>
+    </select>
+    <button id="btn-open-plan" title="Abrir planeamiento seleccionado">Abrir</button>
+    <button id="btn-refresh-plans" title="Actualizar lista">↻</button>
+  </div>
+</header>
+
+  <main>
+    <!-- PANTALLA DE BIENVENIDA -->
+    <section class="card welcome-card" id="welcome-card">
+      <h1>Generador de Planeamientos</h1>
+      <p>Selecciona el tipo de planeamiento que deseas construir.</p>
+      <div class="welcome-buttons">
+        <button id="start-did" class="welcome-btn primary">
+          Planeamiento Didáctico
+        </button>
+        <button id="start-acad" class="welcome-btn">
+          Planeamiento Académico
+        </button>
+      </div>
+      <p class="welcome-note">
+        Podrás vincular tu planeamiento académico con el didáctico reutilizando unidades, objetivos y contenidos.
+      </p>
+    </section>
+
+    <!-- SWITCH DE MODO -->
+    <section class="card mode-switch" id="mode-switch" style="display:none;">
+      <span>Tipo de planeamiento activo:</span>
+      <button class="mode-btn active" data-mode="didactico">Didáctico</button>
+      <button class="mode-btn" data-mode="academico">Académico</button>
+    </section>
+
+    <!-- PLANEAMIENTO DIDÁCTICO -->
+    <section class="card" id="didactico-section" style="display:none;">
+      <h2>Planeamiento didáctico</h2>
+      <form id="did-form">
+        <div class="grid two">
+          <label>Nombre y apellido del docente
+            <input type="text" id="did-docente" placeholder="Nombre del docente"/>
+          </label>
+          <label>Asignatura
+            <input type="text" id="did-asignatura" placeholder="Ej. Ciencias, Inglés"/>
+          </label>
+        </div>
+        <div class="grid two">
+          <label>Tema
+            <input type="text" id="did-tema" placeholder="Tema o unidad específica"/>
+          </label>
+          <label>Nivel
+            <input type="text" id="did-nivel" placeholder="Ej. Sétimo, Octavo, Noveno"/>
+          </label>
+        </div>
+        <div class="grid three">
+          <label>Ciclo lectivo
+            <input type="number" id="did-ciclo" value="2025" min="2000" max="2100"/>
+          </label>
+          <label>Período: del
+            <input type="date" id="did-periodo-del"/>
+          </label>
+          <label>al
+            <input type="date" id="did-periodo-al"/>
+          </label>
+        </div>
+        <div class="grid one">
+          <label>Cantidad de lecciones
+            <input type="number" id="did-lecciones" min="1" placeholder="Ej. 4, 8, 12"/>
+          </label>
+        </div>
+      </form>
+
+      <h3>Matriz didáctica</h3>
+      <div class="table-toolbar">
+        <button id="did-add-row" type="button">Agregar fila</button>
+        <button id="did-clear-rows" type="button">Limpiar filas</button>
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Aprendizajes esperados</th>
+              <th>Estrategias de mediación</th>
+              <th>Indicadores (criterios de aprendizaje)</th>
+              <th class="col-actions">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="did-matriz-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PLANEAMIENTO ACADÉMICO -->
+    <section class="card" id="acad-section" style="display:none;">
+      <h2>Planeamiento académico</h2>
+      <form id="acad-form">
+        <div class="grid two">
+          <label>Nombre y apellido del docente
+            <input type="text" id="acad-docente" placeholder="Nombre del docente"/>
+          </label>
+          <label>Asignatura
+            <input type="text" id="acad-asignatura" placeholder="Asignatura"/>
+          </label>
+        </div>
+        <div class="grid two">
+          <label>Nivel
+            <input type="text" id="acad-nivel" placeholder="Ej. Sétimo, Octavo, Noveno"/>
+          </label>
+          <label>Ciclo lectivo
+            <input type="number" id="acad-ciclo" value="2025" min="2000" max="2100"/>
+          </label>
+        </div>
+        <div class="grid one">
+          <label>Periodicidad
+            <select id="acad-periodicidad">
+              <option value="Primer Semestre">Primer Semestre</option>
+              <option value="Segundo Semestre">Segundo Semestre</option>
+              <option value="Anual">Anual</option>
+            </select>
+          </label>
+        </div>
+      </form>
+
+      <h3>Matriz académica (cada fila = una unidad)</h3>
+      <div class="table-toolbar">
+        <button id="acad-add-row" type="button">Agregar unidad</button>
+        <button id="acad-clear-rows" type="button">Limpiar filas</button>
+      </div>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Unidad</th>
+              <th>Objetivo general de la unidad</th>
+              <th>Objetivo específico</th>
+              <th>Contenidos</th>
+              <th>Estrategias de mediación</th>
+              <th>Tiempo</th>
+              <th class="col-actions">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="acad-matriz-body"></tbody>
+        </table>
+      </div>
+
+      <p class="hint">
+        Cada fila representa una unidad independiente. Desde aquí puedes:
+        <br>• Enviar el <strong>contenido</strong> a un planeamiento didáctico como aprendizaje esperado.
+        <br>• Enviar el <strong>objetivo específico</strong> como criterio de evaluación en el didáctico.
+      </p>
+    </section>
+
+    <section class="card muted" id="status-card" aria-live="polite"></section>
+  </main>
+
+  <footer class="app-footer">
+    <span>Escuela Liceo María Auxiliadora</span>
+    <span>Diseño y desarrollo MartSoft</span>
+    <span>Derechos de autor reservados</span>
+  </footer>
+
+  <script src="planner-engine.js"></script>
+  <script src="exporter.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,507 @@
+/* ============================================================
+   style.css — ELMA Stable Clean v1.3.0
+   - Layout base consolidado (header fijo, sidebar, main)
+   - Vista previa .preview-area
+   - Modo oscuro y mensajes de estado
+   - Ajustes de textarea en matriz
+   - Logo SOLO EN PANTALLA dentro de #preview-area (no afecta impresión)
+   ============================================================ */
+
+/* -------- Paleta y bases -------- */
+:root {
+  --celeste: #b3d4fc;
+  --celeste-oscuro: #3b6ca8;
+  --blanco: #ffffff;
+  --gris: #f5f7fa;
+  --texto: #2d2d2d;
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, sans-serif;
+  display: flex;
+  min-height: 100vh;
+  color: var(--texto);
+  background: var(--gris);
+}
+
+/* -------- Encabezado del sitio (pantalla) -------- */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to right, var(--celeste), var(--blanco));
+  text-align: center;
+  padding: 0.7rem 0;
+  box-shadow: 0 2px 4px var(--shadow);
+  z-index: 10;
+}
+.header h1 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: var(--celeste-oscuro);
+  font-weight: 700;
+}
+.header h2 {
+  margin: 0;
+  font-size: 1rem;
+  color: #4e6b8a;
+}
+.header p {
+  font-size: 0.85rem;
+  color: #444;
+  margin: 0.3rem 0 0;
+}
+
+/* -------- Sidebar -------- */
+.sidebar {
+  width: 200px;
+  background-color: var(--celeste);
+  padding-top: 120px;
+  box-shadow: 2px 0 5px var(--shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.sidebar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.sidebar li {
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  color: var(--blanco);
+  font-weight: 600;
+  transition: 0.25s;
+}
+.sidebar li:hover,
+.sidebar li.active {
+  background-color: var(--celeste-oscuro);
+}
+.bottom-controls {
+  text-align: center;
+  padding: 0.6rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+}
+.bottom-controls button {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--blanco);
+  margin: 0 0.4rem;
+}
+
+/* -------- Main -------- */
+.main {
+  flex: 1;
+  padding: 140px 2rem 2rem 220px; /* espacio para header y sidebar */
+}
+.screen { display: none; animation: fadeIn 0.4s ease; }
+.screen.active { display: block; }
+h2 {
+  color: var(--celeste-oscuro);
+  border-bottom: 2px solid var(--celeste);
+  padding-bottom: 0.3rem;
+}
+
+/* -------- Formularios -------- */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.8rem;
+}
+.form-grid input,
+.form-grid select {
+  padding: 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+.form-actions {
+  margin-top: 0.8rem;
+  display: flex;
+  gap: 0.6rem;
+}
+
+/* -------- Botones -------- */
+button {
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  transition: 0.3s;
+}
+button.primary {
+  background-color: var(--celeste-oscuro);
+  color: white;
+}
+button.secondary {
+  background-color: var(--blanco);
+  border: 1px solid var(--celeste-oscuro);
+  color: var(--celeste-oscuro);
+}
+button.ghost {
+  background: transparent;
+  border: 1px solid var(--celeste-oscuro);
+  color: var(--celeste-oscuro);
+}
+button:hover { opacity: 0.85; }
+
+/* -------- Vista previa y exportación -------- */
+.preview-area {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: white;
+  padding: 1rem;
+  margin-top: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* -------- Pie -------- */
+.footer {
+  text-align: center;
+  padding: 0.8rem;
+  background-color: var(--celeste);
+  color: white;
+  position: fixed;
+  bottom: 0;
+  left: 200px;
+  right: 0;
+  font-size: 0.8rem;
+}
+
+/* -------- Animaciones -------- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* -------- Modo oscuro -------- */
+body.dark { background: #1e1e1e; color: #eee; }
+body.dark .header { background: linear-gradient(to right, #2a4e6b, #1c3b57); }
+body.dark .sidebar { background-color: #2a4e6b; }
+body.dark .sidebar li.active,
+body.dark .sidebar li:hover { background-color: #173047; }
+body.dark .main { background-color: #222; }
+body.dark .footer { background-color: #173047; }
+
+/* -------- Mensajes de estado -------- */
+.status-msg {
+  margin-top: 0.8rem;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  transition: opacity 0.3s ease;
+}
+.status-msg.success {
+  background-color: #e0f7e9;
+  color: #187a38;
+  border: 1px solid #60c680;
+}
+.status-msg.warning {
+  background-color: #fff5e6;
+  color: #a7671a;
+  border: 1px solid #ffcc80;
+}
+.status-msg.info {
+  background-color: #e8f0fe;
+  color: #2056a3;
+  border: 1px solid #90caf9;
+}
+
+/* -------- Ajustes de campos de matriz -------- */
+.criterion-row textarea {
+  min-height: 96px;
+  line-height: 1.35;
+  padding: 8px 10px;
+  resize: none;
+  transition: height 0.2s ease-in-out;
+}
+.criterion-row .criterio { min-height: 140px; }
+
+/* ============================================================
+   LOGO EN PANTALLA — superpuesto dentro del área de PREVIEW
+   - No mueve el layout
+   - No aparece en impresión del navegador
+   - Ruta por defecto: ./img/logo-elma.png (respecto a style.css)
+   ============================================================ */
+@media screen {
+  #preview-area {
+    position: relative !important;
+    isolation: isolate; /* evita que otras capas lo tapen */
+  }
+  #preview-area::before {
+    content: "";
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: clamp(64px, 9vw, 96px);
+    height: clamp(64px, 9vw, 96px);
+    background-image: url("./img/logo-elma.png?v=1");
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 2147483606 !important;
+  }
+}
+@media print {
+  #preview-area::before { display: none !important; }
+}
+
+/* (Opcional: si prefieres que el logo esté fijo a la ventana, sustituye el bloque
+   anterior por un body::before con position: fixed. Mantener oculto en @media print) */
+
+/* Logo visible en el HEADER solo en pantalla (no afecta impresión) */
+@media screen {
+  /* Tu header ya es fixed; no cambiamos el layout, solo superponemos el logo */
+  .header::before {
+    content: "";
+    position: absolute;   /* relativo al propio header */
+    top: 8px;
+    left: 12px;
+    width: 200px;          /* ajusta tamaño a gusto: 70–200px */
+    height: 200px;
+    background-image: url("./img/logo-elma.png");  /* ← tu ruta local */
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;  /* no bloquea clics del header */
+    z-index: 11;           /* por encima del fondo del header */
+  }
+}
+
+/* Jamás en la impresión del navegador */
+@media print {
+  .header::before { display: none !important; }
+}
+
+/* --- SAFETY CLICKS: nunca bloquear eventos en UI --- */
+.header::before,
+#preview-area::before { pointer-events: none !important; }
+
+/* Si el header es más alto por el logo, corre el contenido hacia abajo */
+.main { padding-top: 260px !important; }  /* ajusta si tu logo es aún más grande */
+
+/* Asegura stacking sensato: header arriba, contenido interactuable debajo */
+.header { z-index: 100 !important; position: fixed; left:0; right:0; top:0; }
+.sidebar, .main { position: relative; z-index: 0; }
+
+/* Nunca usar overlays transparentes que tapen la app */
+*::before, *::after { /* no hacemos global pointer-events:none; solo recordatorio */
+  /* evitar overlays absolutos/fijos con z-index alto salvo que tengan pointer-events:none */
+}
+
+/* ==== FIX CLICS EN TODA LA APP (no JS) ==== */
+@media screen {
+  /* 1) El header NO intercepta clics (logo incluido) */
+  .header { pointer-events: none !important; }
+  .header .header-content { pointer-events: auto; } /* si algún día quisieras hacer algo clickeable en el header */
+
+  /* 2) Asegura que ningún pseudo-overlay bloquee eventos */
+  .header::before,
+  #preview-area::before { pointer-events: none !important; }
+
+  /* 3) Bajar la UI para que nada quede debajo del header grande */
+  .sidebar { padding-top: 260px !important; }  /* si tu logo es aún más grande, sube a 280–320px */
+  .main    { padding-top: 260px !important; }
+}
+
+/* ===== Layout guardado: header alto + footer fijo sin tapar contenido ===== */
+@media screen {
+  :root{
+    /* Ajusta estas dos según tu layout actual */
+    --header-h: 280px;   /* altura total efectiva del header con logo */
+    --footer-h: 56px;    /* altura del footer fijo */
+  }
+
+  /* El header puede medir más por el logo; empujamos la UI debajo */
+  .sidebar { padding-top: var(--header-h) !important; }
+  .main    { 
+    padding-top: var(--header-h) !important; 
+    /* Reservamos espacio al final para que el footer NO cubra el área de trabajo */
+    padding-bottom: calc(var(--footer-h) + 16px) !important;
+  }
+
+  /* Footer fijo pero con altura declarada para poder reservar espacio arriba */
+  .footer {
+    position: fixed;
+    left: 200px;      /* ancho de tu sidebar; ajusta si cambia */
+    right: 0;
+    bottom: 0;
+    height: var(--footer-h);
+    line-height: var(--footer-h);
+    z-index: 50;      /* por debajo del header, encima del fondo */
+  }
+
+  /* El header no debe comerse los clics de la UI inferior */
+  .header::before,
+  #preview-area::before { pointer-events: none !important; }
+  .sidebar *, .main * { pointer-events: auto !important; }
+}
+
+/* En impresión no necesitamos footer en absoluto */
+@media print {
+  .footer { display: none !important; }
+}
+
+/* Presets de altura para subir el área de trabajo */
+@media screen {
+  :root{
+    /* Elige UNO de estos presets cambiando el valor: */
+
+    /* Compacto (sube bastante pero seguro si el logo es grande) */
+    --header-h: 220px;
+
+    /* Ultra-compacto (sube más; úsalo si no se solapa con el título) */
+    /* --header-h: 200px; */
+
+    /* Si el footer tapa algo, ajústalo aquí también */
+    --footer-h: 56px;
+  }
+
+  /* Aplica el nuevo alto sin tocar nada más */
+  .sidebar { padding-top: var(--header-h) !important; }
+  .main    { padding-top: var(--header-h) !important; }
+}
+
+/* ===== Crear rúbrica en 5 columnas (criterio + 4 niveles) ===== */
+@media screen {
+  /* Cada fila de criterio se vuelve un grid de 5 columnas */
+  .criterion-row{
+    display: grid;
+    grid-template-columns: minmax(260px, 1.3fr) repeat(4, minmax(180px, 1fr));
+    gap: 8px 12px;
+    align-items: start;
+  }
+
+  /* Asegura que todos los campos llenen su columna */
+  .criterion-row .criterio,
+  .criterion-row .nivel4,
+  .criterion-row .nivel3,
+  .criterion-row .nivel2,
+  .criterion-row .nivel1 {
+    width: 100%;
+  }
+
+  /* Inputs/áreas cómodas de editar */
+  .criterion-row input[type="text"],
+  .criterion-row textarea {
+    width: 100%;
+    min-height: 56px;         /* si usas textarea se ve mejor */
+    box-sizing: border-box;
+  }
+
+  /* Si tu fila tiene botones (eliminar/duplicar), que vayan al final de la fila */
+  .criterion-row .row-tools {
+    grid-column: 1 / -1;      /* ocupa todo el ancho debajo de la fila */
+    justify-self: end;
+    margin-top: 4px;
+  }
+}
+
+/* Responsivo: en pantallas medianas reduce mínimos; en móviles vuelve a apilar */
+@media (max-width: 1200px){
+  .criterion-row{
+    grid-template-columns: minmax(220px, 1.2fr) repeat(4, minmax(150px, 1fr));
+  }
+}
+@media (max-width: 900px){
+  .criterion-row{
+    grid-template-columns: 1fr 1fr; /* 2 columnas: más legible en móvil */
+  }
+  .criterion-row .criterio{ grid-column: 1 / -1; }  /* criterio ocupa toda la fila */
+}
+
+/* Impresión: mantiene 5 columnas comprimidas y ordenadas */
+@media print{
+  .criterion-row{
+    grid-template-columns: 1.1fr repeat(4, 1fr);
+    gap: 6px 8px;
+  }
+  .criterion-row input[type="text"],
+  .criterion-row textarea{
+    min-height: auto;
+  }
+}
+
+/* --- Solo impresión: usa <img> real; oculta el pseudo-logo de pantalla --- */
+.print-brand { 
+  display: none;
+}
+
+@media print {
+  /* Evita duplicados: el pseudo-elemento de pantalla no imprime */
+  .header::before { 
+    display: none !important; 
+    content: none !important;
+    background: none !important;
+  }
+
+  /* El <img> real sí imprime */
+  .print-brand {
+    display: block !important;
+    position: relative;       /* o absolute/fixed si prefieres posición exacta */
+    width: 42mm;              /* ajusta tamaño de impresión */
+    height: auto;
+    margin: 6mm 0 4mm 0;      /* separación superior */
+    z-index: 9999;
+  }
+
+  /* Si quieres posición fija en la esquina superior izquierda de la hoja: */
+  /* 
+  .print-brand {
+    position: fixed;
+    top: 10mm;
+    left: 12mm;
+    width: 38mm;
+    height: auto;
+  } 
+  */
+}
+
+/* ===== Dock fijo para la ventana de Verbos (verbs-helper) ===== */
+:root{
+  --verbs-panel-bottom: 6vh;        /* distancia desde borde inferior */
+  --verbs-panel-max-h: 11vh;        /* altura máx (≈ tercio inferior) */
+  --verbs-panel-width: min(980px, 94vw);
+  --verbs-panel-z: 10050;
+}
+
+/* Aplica a id o clase + cuando agreguemos la clase .docked */
+#verbs-helper.docked,
+.verbs-helper.docked {
+  position: fixed !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  bottom: var(--verbs-panel-bottom) !important;
+
+  width: var(--verbs-panel-width) !important;
+  max-height: var(--verbs-panel-max-h) !important;
+  overflow: auto !important;
+
+  z-index: var(--verbs-panel-z) !important;
+
+  /* visual opcional */
+  box-shadow: 0 12px 28px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.12);
+  border-radius: 12px;
+  background: var(--panel-bg, #fff);
+}
+
+/* En caso de que traiga un overlay/backdrop que tape clics */
+#verbs-helper + .verbs-overlay,
+#verbs-helper + .modal-backdrop,
+.verbs-helper + .verbs-overlay,
+.verbs-helper + .modal-backdrop {
+  pointer-events: none !important;
+  background: transparent !important;
+}
+
+/* Ajustes internos opcionales */
+#verbs-helper.docked .panel-body,
+.verbs-helper.docked .panel-body {
+  padding: 12px;
+}

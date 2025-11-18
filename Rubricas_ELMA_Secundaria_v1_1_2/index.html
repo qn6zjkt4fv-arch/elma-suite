@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generador ELMA Secundaria v1.2.0</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <h1>Escuela Liceo María Auxiliadora de San José</h1>
+      <h2>Ministerio de Educación Pública – Costa Rica</h2>
+      <p>Herramienta institucional para la construcción de rúbricas · Departamento de Calidad Educativa</p>
+    </div>
+  </header>
+
+  <nav class="sidebar">
+    <ul>
+      <li class="active" data-target="admin">Administrativo</li>
+      <li data-target="create">Crear Rúbrica</li>
+      <li data-target="bank">Banco</li>
+      <li data-target="align">Alinear</li>
+      <li data-target="grade">Evaluar / Calificar</li>
+    </ul>
+    <div class="bottom-controls">
+      <button id="mode-toggle">🌙</button>
+      <button id="btn-help">❔</button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <!-- ADMIN -->
+    <section id="screen-admin" class="screen active">
+      <h2>Sección Administrativa</h2>
+      <form id="admin-form">
+        <div class="form-grid">
+          <label>Nombre del docente:<input type="text" id="docente" /></label>
+          <label>Asignatura:
+            <select id="asignatura">
+              <option value="">Seleccione</option>
+              <option>Español</option>
+              <option>Estudios Sociales</option>
+              <option>Cívica</option>
+              <option>Ciencias</option>
+              <option>Biología</option>
+              <option>Física</option>
+              <option>Química</option>
+              <option>Inglés gramatical</option>
+              <option>Inglés conversacional</option>
+              <option>Francés</option>
+              <option>Artes Industriales</option>
+              <option>Educación para el Hogar</option>
+              <option>Educación Musical</option>
+              <option>Educación Física</option>
+              <option>Informática Educativa</option>
+              <option>Filosofía</option>
+              <option>Sicología</option>
+              <option>Educación Religiosa</option>
+            </select>
+          </label>
+          <label>Nivel:<input type="text" id="nivel" /></label>
+          <label>Periodo:<input type="text" id="periodo" /></label>
+          <label for="adm-tema">Tema del Proceso de Aprendizaje:</label>
+          <input type="text" id="adm-tema" placeholder="Escriba el tema o contenido principal..." />
+          <label for="adm-numero">Número de Proceso Administrativo:</label>
+          <input type="text" id="adm-numero" placeholder="Ejemplo: PA-2025-03" />
+          <label>Fecha:<input type="date" id="fecha" /></label>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="btn-save-admin" class="primary">Guardar</button>
+          <button type="button" id="btn-clear-admin" class="secondary">Limpiar</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- CREAR RÚBRICA -->
+    <section id="screen-create" class="screen">
+      <h2>Crear Rúbrica</h2>
+      <div class="builder-actions">
+        <button id="add-criterion" class="primary">➕ Agregar Criterio</button>
+        <button id="preview-rubric" class="secondary">👁️ Vista previa</button>
+        <button id="save-bank" class="secondary">💾 Guardar en banco</button>
+      </div>
+      <div id="criteria-list"></div>
+      <div class="export-actions">
+        <button id="export-word" class="ghost">Exportar Word</button>
+        <button id="export-pdf" class="ghost">Exportar PDF</button>
+        <button id="export-json" class="ghost">Exportar JSON</button>
+        <button id="export-csv" class="ghost">Exportar CSV</button>
+        <button id="print-view" class="ghost">Vista de impresión</button>
+      </div>
+      <div id="preview-area" class="preview-area hidden"></div>
+    </section>
+
+    <!-- BANCO -->
+    <section id="screen-bank" class="screen">
+      <h2>Banco de Rúbricas</h2>
+      <div class="bank-actions">
+        <button id="load-bank" class="primary">📂 Cargar del banco</button>
+        <button id="import-json" class="secondary">📥 Importar JSON</button>
+        <button id="export-bank" class="secondary">📤 Exportar banco</button>
+      </div>
+      <input type="file" id="bank-file" accept=".json" hidden />
+      <div id="bank-list"></div>
+    </section>
+
+    <!-- ALINEAR -->
+    <section id="screen-align" class="screen">
+      <h2>Alinear Rúbrica con Malla Curricular</h2>
+      <div class="align-actions">
+        <button id="btn-load-demo" class="primary">📘 Malla Curricular</button>
+        <button id="btn-load-json" class="secondary">📂 Cargar JSON</button>
+        <input type="file" id="malla-file" accept=".json" hidden />
+      </div>
+      <div id="align-result"></div>
+    </section>
+
+    <!-- EVALUAR -->
+    <section id="screen-grade" class="screen">
+      <h2>Evaluar / Calificar</h2>
+      <div class="grade-actions">
+        <button id="btn-load-rubric" class="primary">📋 Cargar rúbrica</button>
+        <button id="btn-new-student" class="secondary">👤 Nuevo estudiante</button>
+        <button id="btn-export-grades" class="ghost">📤 Exportar calificaciones</button>
+      </div>
+      <div id="grade-table"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Versión v1.2.0 – Generador de Rúbricas Institucional ELMA Secundaria · Desarrollado con ❤️ para la comunidad educativa.</p>
+  </footer>
+
+  <script src="app.js"></script>
+  <script src="rubric-engine.js"></script>
+  <script src="verbs-helper.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.19.3/dist/xlsx.full.min.js"></script>
+  <script src="ui-hotfix.stable.v1.0.5.js?v=105"></script>
+  <script src="exporter.js"></script>
+  <script src="alignment.js"></script>
+  <script src="grade-module.js"></script>
+  <script src="module-boot.js"></script>
+  <script src="ui-compat.autowire.v2.1.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,399 @@
+/* ================================
+   Generador de Planeamientos ELMA
+   Estilo institucional celeste
+   ================================ */
+
+:root {
+  --bg1:#e8f4ff;
+  --bg2:#cfe9ff;
+  --celeste-1:#6dbbff;
+  --celeste-2:#3ea1ff;
+  --ink:#0b253a;
+  --muted:#4b657a;
+  --card:#ffffff;
+  --line:#e1edf7;
+  --accent:#0e7be7;
+  --danger:#d33c3c;
+}
+
+/* Reset básico */
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Ubuntu, Arial, sans-serif;
+  color: var(--ink);
+  background: linear-gradient(135deg, var(--bg1), var(--bg2));
+}
+
+/* ================================
+   Encabezado
+   ================================ */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, var(--celeste-1), var(--celeste-2));
+  color: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo {
+  display: block;
+  height: 42px;
+  max-height: 42px;
+  width: auto;
+  object-fit: contain;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.72rem;
+  line-height: 1.15;
+}
+
+.brand-line-1 { font-weight: 600; }
+.brand-line-2 { opacity: 0.9; }
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.actions button {
+  margin-left: 6px;
+  margin-top: 4px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .08);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.actions button:hover {
+  transform: translateY(-1px);
+}
+
+/* ================================
+   Layout general
+   ================================ */
+
+main {
+  max-width: 1100px;
+  margin: 18px auto;
+  padding: 0 16px 24px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, .05);
+}
+
+.card h1,
+.card h2,
+.card h3 {
+  margin-top: 0;
+}
+
+.card.muted {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* ================================
+   Bienvenida
+   ================================ */
+
+.welcome-card {
+  text-align: center;
+}
+
+.welcome-card h1 {
+  font-size: 1.4rem;
+}
+
+.welcome-card p {
+  margin: 6px 0;
+}
+
+.welcome-buttons {
+  margin: 14px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.welcome-btn {
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #f7fbff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.welcome-btn.primary {
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+}
+
+.welcome-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0,0,0,.08);
+}
+
+.welcome-note {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ================================
+   Selector de modo
+   ================================ */
+
+.mode-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.mode-switch span {
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.mode-btn {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #f7fbff;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.mode-btn.active {
+  background: var(--accent);
+  color: #ffffff;
+  border-color: var(--accent);
+}
+
+/* ================================
+   Formularios y grillas
+   ================================ */
+
+.grid {
+  display: grid;
+  grid-gap: 12px;
+}
+
+.grid.one { grid-template-columns: 1fr; }
+.grid.two { grid-template-columns: 1fr 1fr; }
+.grid.three { grid-template-columns: repeat(3, 1fr); }
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  outline: none;
+  background: #fbfdff;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+
+textarea { resize: vertical; }
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(14, 123, 231, .15);
+}
+
+/* ================================
+   Tablas
+   ================================ */
+
+.table-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.table-toolbar button,
+.mini-btn {
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  background: #f7fbff;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.table-toolbar button:hover,
+.mini-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+
+.table-responsive {
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.85rem;
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  background: #f2f8ff;
+  border-bottom: 1px solid var(--line);
+  padding: 10px;
+  text-align: left;
+  font-weight: 600;
+}
+
+tbody td {
+  border-top: 1px solid var(--line);
+  padding: 8px;
+  vertical-align: top;
+}
+
+.col-actions {
+  width: 180px;
+  text-align: center;
+}
+
+.row-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.row-actions button {
+  margin: 1px 2px;
+  padding: 4px 7px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.7rem;
+}
+
+.row-actions button:hover {
+  transform: translateY(-1px);
+}
+
+.row-actions .danger {
+  border-color: #ffd8d8;
+  color: #8a1f1f;
+  background: #fff3f3;
+}
+
+/* ================================
+   Textos auxiliares
+   ================================ */
+
+.hint {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* ================================
+   Status bar
+   ================================ */
+
+#status-card {
+  min-height: 20px;
+  font-size: 0.85rem;
+  padding-left: 10px;
+  border-left: none;
+}
+
+/* ================================
+   Footer
+   ================================ */
+
+.app-footer {
+  text-align: center;
+  padding: 14px;
+  color: #0b253a;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+/* ================================
+   Responsivo
+   ================================ */
+
+@media (max-width: 900px) {
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .actions { justify-content: flex-start; }
+}
+
+@media (max-width: 800px) {
+  .grid.two,
+  .grid.three { grid-template-columns: 1fr; }
+  .brand-text { font-size: 0.7rem; }
+}
+
+@media (max-width: 500px) {
+  .actions button {
+    font-size: 0.7rem;
+    padding: 6px 8px;
+  }
+  .welcome-btn {
+    width: 100%;
+    max-width: 260px;
+  }
+}
