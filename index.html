@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>ELMA-Suite · Herramientas académicas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --azul-fondo-1: #d6eaff;
+      --azul-fondo-2: #b3d5ff;
+      --azul-texto: #003366;
+      --azul-boton: #0d6efd;
+      --azul-boton-hover: #0b63c5;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, var(--azul-fondo-1), var(--azul-fondo-2));
+    }
+    .card {
+      background: #ffffff;
+      padding: 24px 32px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 1.9rem;
+      color: var(--azul-texto);
+    }
+    p {
+      margin: 0 0 18px;
+      color: #34495e;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    a.btn {
+      display: block;
+      padding: 10px 16px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      border: 1px solid var(--azul-boton-hover);
+      background: var(--azul-boton);
+      color: #ffffff;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease, color 0.1s ease;
+    }
+    a.btn.secondary {
+      background: #ffffff;
+      color: var(--azul-boton);
+    }
+    a.btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      background: var(--azul-boton-hover);
+      color: #ffffff;
+    }
+    a.btn.secondary:hover {
+      background: #e6f0ff;
+      color: var(--azul-boton-hover);
+    }
+    small {
+      display: block;
+      margin-top: 16px;
+      font-size: 0.8rem;
+      color: #667;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>ELMA-Suite</h1>
+    <p>Herramientas académicas para planeamientos y rúbricas.</p>
+
+    <div class="buttons">
+      <a class="btn" href="generador_planeamientos_v1_0/index.html">
+        Generador de Planeamientos
+      </a>
+      <a class="btn secondary" href="Rubricas_ELMA_Secundaria_v1_1_2/index.html">
+        Generador de Rúbricas
+      </a>
+    </div>
+
+    <small>Escuela Liceo María Auxiliadora · Uso interno docente</small>
+  </div>
+</body>
+</html>
