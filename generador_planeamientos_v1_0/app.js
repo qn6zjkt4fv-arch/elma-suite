@@ -203,6 +203,99 @@
   }
 
   // ─────────────────────────────────────────
+  // Exportar / Importar JSON (respaldo en carpeta ELMA)
+  // ─────────────────────────────────────────
+  function buildJsonFilenameFromState(state) {
+    try {
+      const did = state && state.didactico ? state.didactico : {};
+      const ac  = state && state.academico ? state.academico : {};
+
+      const docente = (did.docente || ac.docente || "").toString();
+      const asign   = (did.asignatura || ac.asignatura || "planeamiento").toString();
+      const nivel   = (did.nivel || ac.nivel || "").toString();
+      const ciclo   = (did.ciclo || ac.ciclo || "").toString();
+
+      const parts = [asign, nivel, ciclo, docente]
+        .map(s => s.trim())
+        .filter(Boolean)
+        .map(s =>
+          s.normalize("NFD")
+           .replace(/[\u0300-\u036f]/g, "")
+           .replace(/[^A-Za-z0-9_-]+/g, "_")
+        );
+
+      const date = new Date().toISOString().slice(0, 10);
+      const base = parts.length ? "planeamiento_" + parts.join("_") : "planeamiento_elma";
+      return base + "_" + date + ".json";
+    } catch (e) {
+      return "planeamiento_elma.json";
+    }
+  }
+
+  function handleExportJson() {
+    if (!Engine || !Engine.saveAll) {
+      alert("No se pudo acceder al motor de planeamientos.");
+      return;
+    }
+    try {
+      const state = Engine.saveAll(currentMode);
+      const json  = JSON.stringify(state, null, 2);
+      const blob  = new Blob([json], { type: "application/json" });
+      const url   = URL.createObjectURL(blob);
+      const a     = document.createElement("a");
+      a.href = url;
+      a.download = buildJsonFilenameFromState(state);
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setStatus("Archivo JSON de planeamiento descargado. Guárdalo en tu carpeta ELMA de planeamientos.");
+    } catch (e) {
+      console.error("Error exportando JSON:", e);
+      alert("No se pudo exportar el archivo JSON del planeamiento.");
+    }
+  }
+
+  function handlePlanFileChange(e) {
+    const input = e.target;
+    const file = input && input.files && input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const text = String(reader.result || "");
+        const st = JSON.parse(text);
+        if (!st || typeof st !== "object") {
+          throw new Error("Formato inválido");
+        }
+        if (!Engine) throw new Error("Motor de planeamientos no disponible.");
+
+        if (st.academico) Engine.writeAcademicoToDOM(st.academico);
+        if (st.didactico) Engine.writeDidacticoToDOM(st.didactico);
+
+        // Ajustar modo actual según el archivo (por defecto, didáctico)
+        currentMode = (st.mode === "academico") ? "academico" : "didactico";
+        showWelcome();
+        setStatus("Planeamiento cargado desde archivo JSON. Selecciona Académico o Didáctico para continuar.");
+
+        // Re-guardar en almacenamiento local como comodidad
+        try { Engine.saveAll(currentMode); } catch (err) { console.warn(err); }
+      } catch (err) {
+        console.error("Error importando JSON:", err);
+        alert("No se pudo leer el archivo. Verifica que sea un JSON generado por esta herramienta.");
+      } finally {
+        if (input) input.value = "";
+      }
+    };
+    reader.onerror = () => {
+      alert("Ocurrió un error al leer el archivo seleccionado.");
+      if (input) input.value = "";
+    };
+    reader.readAsText(file, "utf-8");
+  }
+
+  // ─────────────────────────────────────────
   // INIT
   // ─────────────────────────────────────────
   function init() {
@@ -231,6 +324,16 @@
     if (btnPrev) btnPrev.onclick = handlePreview;
     if (btnWord) btnWord.onclick = handleExportWord;
     if (btnPrint) btnPrint.onclick = handlePrint;
+
+    const btnExportJson = document.getElementById("btn-export-json");
+    const btnImportJson = document.getElementById("btn-import-json");
+    const planFileInput = document.getElementById("plan-file-input");
+
+    if (btnExportJson) btnExportJson.onclick = handleExportJson;
+    if (btnImportJson && planFileInput) {
+      btnImportJson.onclick = () => planFileInput.click();
+      planFileInput.addEventListener("change", handlePlanFileChange);
+    }
 
     // picker acciones
     const planPicker = document.getElementById("plan-picker");
