@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administración de Usuarios – ELMA-Suite</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f8fb;
+        margin: 0;
+        padding: 0;
+    }
+
+    header {
+        background-color: #22577A;
+        color: white;
+        padding: 16px;
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 40px auto;
+        background: white;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: 0 0 12px rgba(0,0,0,0.15);
+    }
+
+    h2 {
+        margin-top: 0;
+        color: #113f59;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 16px;
+    }
+
+    th, td {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+
+    th {
+        background-color: #22577A;
+        color: white;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    button {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-right: 6px;
+    }
+
+    .btn-add {
+        background-color: #38A3A5;
+        color: white;
+    }
+
+    .btn-edit {
+        background-color: #F4A261;
+        color: white;
+    }
+
+    .btn-delete {
+        background-color: #D9534F;
+        color: white;
+    }
+
+    .btn-generate {
+        background-color: #22577A;
+        color: white;
+        width: 100%;
+        margin-top: 20px;
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    /* Modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 200;
+        left: 0; top: 0;
+        width: 100%; height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+        background-color: white;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 10px;
+        width: 440px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    }
+
+    .close {
+        float: right;
+        font-size: 22px;
+        cursor: pointer;
+    }
+
+    .form-group {
+        margin-bottom: 14px;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .form-group input, .form-group select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #aaa;
+        border-radius: 6px;
+    }
+</style>
+
+<script src="encoder.js"></script>
+<script src="decoder.js"></script>
+<script src="admin.js" defer></script>
+</head>
+
+<body>
+
+<header>Administración de Usuarios – ELMA-Suite</header>
+
+<div class="container">
+
+    <h2>Lista de Usuarios</h2>
+
+    <button class="btn-add" onclick="openAddModal()">+ Agregar Usuario</button>
+
+    <table id="usersTable">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nombre completo</th>
+                <th>Sección</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="usersBody">
+            <!-- Usuarios cargados dinámicamente -->
+        </tbody>
+    </table>
+
+    <button class="btn-generate" onclick="generateUsersEnc()">Generar nuevo users.enc</button>
+
+</div>
+
+<!-- Modal agregar/editar -->
+<div id="userModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+
+        <h3 id="modalTitle">Agregar Usuario</h3>
+
+        <div class="form-group">
+            <label>Nombre completo</label>
+            <input type="text" id="inputName">
+        </div>
+
+        <div class="form-group">
+            <label>Sección</label>
+            <select id="inputSection">
+                <option value="P">Primaria</option>
+                <option value="S">Secundaria</option>
+            </select>
+        </div>
+
+        <button class="btn-add" onclick="saveUser()">Guardar</button>
+
+    </div>
+</div>
+
+</body>
+</html>
