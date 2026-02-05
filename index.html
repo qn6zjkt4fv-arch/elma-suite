@@ -25,64 +25,87 @@
     }
     .card {
       background: #ffffff;
-      padding: 24px 32px;
-      border-radius: 18px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-      max-width: 520px;
+      padding: 32px 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      max-width: 540px;
       width: 100%;
       text-align: center;
     }
     h1 {
-      margin: 0 0 8px;
-      font-size: 1.9rem;
+      margin: 0 0 12px;
+      font-size: 1.95rem;
       color: var(--azul-texto);
     }
     p {
-      margin: 0 0 18px;
+      margin: 0 0 20px;
       color: #34495e;
+    }
+    label {
+      display: block;
+      text-align: left;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: var(--azul-texto);
+    }
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus {
+      outline: none;
+      border-color: var(--azul-boton);
+      box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
     }
     .buttons {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      margin-top: 10px;
+      gap: 12px;
+      margin-top: 16px;
     }
     a.btn {
       display: block;
-      padding: 10px 16px;
+      padding: 12px 20px;
       border-radius: 999px;
       text-decoration: none;
       font-weight: 600;
       border: 1px solid var(--azul-boton-hover);
       background: var(--azul-boton);
       color: #ffffff;
-      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease, color 0.1s ease;
+      transition: all 0.2s ease;
     }
     a.btn.secondary {
       background: #ffffff;
       color: var(--azul-boton);
+      border-color: var(--azul-boton);
     }
     a.btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
       background: var(--azul-boton-hover);
-      color: #ffffff;
     }
     a.btn.secondary:hover {
-      background: #e6f0ff;
+      background: #f0f7ff;
       color: var(--azul-boton-hover);
+      border-color: var(--azul-boton-hover);
     }
     small {
       display: block;
-      margin-top: 16px;
-      font-size: 0.8rem;
-      color: #667;
+      margin-top: 24px;
+      font-size: 0.85rem;
+      color: #64748b;
     }
     .menu-extra {
-      margin-top: 12px;
+      margin-top: 16px;
       display: flex;
       justify-content: center;
-      gap: 16px;
+      gap: 24px;
+      flex-wrap: wrap;
     }
     .menu-link-btn {
       border: none;
@@ -90,18 +113,35 @@
       color: var(--azul-boton);
       text-decoration: underline;
       cursor: pointer;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       padding: 0;
+      transition: color 0.2s;
+    }
+    .menu-link-btn:hover {
+      color: var(--azul-boton-hover);
+    }
+    .loading {
+      color: var(--azul-boton);
+      font-style: italic;
+      margin: 12px 0;
+    }
+    .login-error {
+      color: #dc2626;
+      margin-top: 12px;
+      font-size: 0.95rem;
+      min-height: 1.2em;
     }
   </style>
+
+  <script src="decoder.js"></script>
 </head>
 <body>
 
   <!-- LOGIN -->
   <div class="card" id="login-card">
     <h1>ELMA-Suite</h1>
-    <p>Acceso docente · Ingrese su código y contraseña.</p>
-
+    <p>Acceso docente. Ingrese su código institucional y contraseña.</p>
+    <div id="loading-users" class="loading" style="display:none;">Cargando lista de usuarios…</div>
     <form id="login-form">
       <div>
         <label for="user-code">Código de usuario</label>
@@ -111,7 +151,7 @@
         <label for="user-pass">Contraseña</label>
         <input id="user-pass" type="password" autocomplete="off" required>
       </div>
-      <button type="submit" class="btn">Entrar</button>
+      <button type="submit" class="btn">Iniciar sesión</button>
       <div class="login-error" id="login-error"></div>
     </form>
   </div>
@@ -121,31 +161,30 @@
     <h1>ELMA-Suite</h1>
     <p id="menu-subtitle">Herramientas académicas para planeamientos y rúbricas.</p>
 
-  <div class="buttons">
-    <a class="btn" href="generador_planeamientos_v1_0/index.html">Generador de Planeamientos</a>
-    <a class="btn secondary" href="Rubricas_ELMA_Secundaria_v1_1_2/index.html">Generador de Rúbricas</a>
-
-    <!-- 🔥 NUEVO MÓDULO DE PROYECTOS -->
-    <a class="btn" href="ICPI/icpi.html">Módulo de Proyectos</a>
-  </div>
+    <div class="buttons">
+      <a class="btn" href="generador_planeamientos_v1_0/index.html">Generador de Planeamientos</a>
+      <a class="btn secondary" href="Rubricas_ELMA_Secundaria_v1_1_2/index.html">Generador de Rúbricas</a>
+      <a class="btn" href="ICPI/icpi.html">Módulo de Proyectos</a>
+    </div>
 
     <div class="menu-extra">
       <button type="button" id="btn-open-change-menu" class="menu-link-btn">Cambiar contraseña</button>
       <button type="button" id="btn-logout" class="menu-link-btn">Cerrar sesión</button>
     </div>
+
     <div class="menu-extra" id="admin-panel-button" style="display:none; margin-top:8px;">
       <button type="button" class="menu-link-btn" id="btn-open-admin">Administración de Usuarios</button>
     </div>
 
-    <div id="change-pass-panel-menu" style="display:none; margin-top:14px; text-align:left;">
+    <div id="change-pass-panel-menu" style="display:none; margin-top:16px; text-align:left;">
       <form id="change-pass-form-menu">
         <label>Contraseña actual</label>
         <input id="current-pass-menu" type="password" autocomplete="off" required>
-        <label style="margin-top:6px;">Nueva contraseña</label>
+        <label style="margin-top:8px;">Nueva contraseña</label>
         <input id="new-pass-menu" type="password" autocomplete="off" required>
-        <label style="margin-top:6px;">Confirmar nueva contraseña</label>
+        <label style="margin-top:8px;">Confirmar nueva contraseña</label>
         <input id="new-pass2-menu" type="password" autocomplete="off" required>
-        <button type="submit" class="btn" style="margin-top:10px;">Guardar nueva contraseña</button>
+        <button type="submit" class="btn" style="margin-top:16px;">Guardar cambios</button>
         <div class="login-error" id="change-pass-error-menu"></div>
       </form>
     </div>
@@ -154,118 +193,42 @@
   </div>
 
 <script src="admin.js"></script>
-
 <script>
 document.getElementById("btn-open-admin").onclick = openAdmin;
 </script>
 
 <script>
-/* ============================================================
-   🔐 SISTEMA DE USUARIOS — LISTA COMPLETA
-   ============================================================ */
+// =============================================================================
+// SISTEMA DE USUARIOS — FUENTE ÚNICA: users.enc
+// =============================================================================
+let ELMA_USERS = [];  // Se llena desde decoder.js
 
-const ELMA_USERS = [
-  { code: "P-AGUERL2026", name: "Agüero Morales, Lucía De Los Ángeles" },
-  { code: "P-AGUIRR2026", name: "Aguirre Romero Melissa" },
-  { code: "P-BALTOD2026", name: "Baltodano Anchia, Diana, Cristina" },
-  { code: "P-BARRAG2026", name: "Barrantes González Maylin Alejandra" },
-  { code: "P-BARRIM2026", name: "Barrios Mendoza Lorella" },
-  { code: "P-BERMUC2026", name: "Bermúdez Cordero Shirley Vivian" },
-  { code: "P-CABEZD2026", name: "Cabezas Dinarte Anell" },
-  { code: "P-CARVAA2026", name: "Carvajal Vega, Adriana" },
-  { code: "P-CAZARA2026", name: "Cázares Alpizar Yesenia" },
-  { code: "P-CASTRK2026", name: "Castro Alfaro, Karla" },
-  { code: "P-CONXXE2026", name: "Con Pacheco, Eugenia María" },
-  { code: "P-CRUZXK2026", name: "Cruz Soza, Sor Kassandra" },
-  { code: "P-FALLAC2026", name: "Fallas Rodríguez, Carmen Maria" },
-  { code: "P-FONSEM2026", name: "Fonseca Garcia, María Gabriela" },
-  { code: "P-GARBAG2026", name: "Garbanzo Garita. Rocío Lorena" },
-  { code: "P-GARCIG2026", name: "Garcia García Maria De Los Ángeles" },
-  { code: "P-GONZAP2026", name: "González Barboza, Paula" },
-  { code: "P-HERRET2026", name: "Herrera, Tencio, Maria, Gabriela" },
-  { code: "P-HIDALJ2026", name: "Hidalgo Pochet, Julie" },
-  { code: "P-JIMENM2026", name: "Jiménez Madrigal, Mauricio" },
-  { code: "P-LEDEZK2026", name: "Ledezma Rojas, Karla, Fiorella" },
-  { code: "P-MATAMC2026", name: "Matamoros Calvo Cristina Maria" },
-  { code: "P-MELENS2026", name: "Meléndez Serrano Maureen. Paola" },
-  { code: "P-MENAXM2026", name: "Mena Murillo Guiselle" },
-  { code: "P-MENAXE2026", name: "Mena Zúñiga, Eva Alaria" },
-  { code: "P-MENDEH2026", name: "Méndez, Barrantes, Helen" },
-  { code: "P-MENEVM2026", name: "Meneses Valverde, Mainor" },
-  { code: "P-MONJEA2026", name: "Monje Ramírez, André Maria" },
-  { code: "P-MONTEA2026", name: "Montero Villalobos Adriana" },
-  { code: "P-MORAAA2026", name: "Mora Araya. Ana Belén" },
-  { code: "P-MURILC2026", name: "Murillo Chinchilla. Adriana" },
-  { code: "P-OBANDM2026", name: "Obando Arias María José" },
-  { code: "P-SANCHP2026", name: "Sánchez Azofeifa Pamela" },
-  { code: "P-PUTOYM2026", name: "Putoy Rodríguez, Sor, Martha" },
-  { code: "P-RIVERA2026", name: "Rivera Porras, Adriana" },
-  { code: "P-ROJASM2026", name: "Rojas Morelli Guiselle" },
-  { code: "P-SOLANA2026", name: "Solano Calderón, Ana Laura" },
-  { code: "P-SOLISM2026", name: "Solís Barquero Marcela Jenny" },
-  { code: "P-VARGAC2026", name: "Vargas Carpio. Karol Maria" },
-  { code: "P-VARGAL2026", name: "Vargas Hernández Liseth" },
-  { code: "P-VICTOF2026", name: "Victor Fuentes, Kendy" },
-  { code: "P-VILLAD2026", name: "Villalobos Jiménez, Douglas Javier" },
-  { code: "P-ZUNIGN2026", name: "Zúñiga Segura Natalia" },
-  { code: "P-PADILM2026", name: "Padilla Hernández, María Isel" },
-  { code: "P-AGUILM2026", name: "Aguilar García Mirna" },
-  { code: "P-SERRAG2026", name: "Serrano García Tatiana" },
-  { code: "P-MENDEA2026", name: "Méndez Arce, Laura Vanessa" },
-  { code: "P-MENDEF2026", name: "Méndez Garro Fabiola" },
-
-  { code: "S-AGUILI2026", name: "Aguilar Iliana" },
-  { code: "S-ALVARK2026", name: "Alvarado Keilyn" },
-  { code: "S-ANCHIC2026", name: "Anchía Carolina" },
-  { code: "S-ANDERC2026", name: "Anderson Carlos" },
-  { code: "S-ARIASL2026", name: "Arias Laura" },
-  { code: "S-AVILAN2026", name: "Ávila Natalia" },
-  { code: "S-BERMUY2026", name: "Bermúdez Yehisy" },
-  { code: "S-CABEZA2026", name: "Cabezas Annell" },
-  { code: "S-CALVOS2026", name: "Calvo Susan" },
-  { code: "S-CASTIK2026", name: "Castillo Katherine" },
-  { code: "S-DELGAM2026", name: "Delgado Marlen" },
-  { code: "S-ESPINS2026", name: "Espinoza Sor Nazareth" },
-  { code: "S-FONSEA2026", name: "Fonseca Alexander" },
-  { code: "S-HENRIC2026", name: "Henríquez Cristina" },
-  { code: "S-HERNAC2026", name: "Hernández Carmen" },
-  { code: "S-MARINM2026", name: "Marín Mariela" },
-  { code: "S-MARTIE2026", name: "Martínez Eduardo" },
-  { code: "S-MCADAA2026", name: "McAdam Aldo" },
-  { code: "S-MENESM2026", name: "Meneses Minor" },
-  { code: "S-NAVARL2026", name: "Navarro Leidy" },
-  { code: "S-NUNEZM2026", name: "Núñez Maricela" },
-  { code: "S-PIEDRD2026", name: "Piedra Daniela" },
-  { code: "S-PORRAS2026", name: "Porras Silvia" },
-  { code: "S-PRADOM2026", name: "Prado María Fernanda" },
-  { code: "S-ROMERL2026", name: "Romero Luis" },
-  { code: "S-SALASV2026", name: "Salas Valeria" },
-  { code: "S-SEQUEA2026", name: "Sequeira Allan" },
-  { code: "S-ULATEM2026", name: "Ulate Mabel" },
-  { code: "S-ULATES2026", name: "Ulate Sor Victoria" },
-  { code: "S-VENEGK2026", name: "Venegas Karla" },
-  { code: "S-ZUNIGP2026", name: "Zúñiga Paola" },
-
-  { code: "S-ADMIN2026", name: "Administrador ELMA-Suite" },
-];
-
-/* Clave maestra SNIT para recuperación del administrador */
 const ELMA_SNIT_KEY = "k9R!t6$X2mQp";
-
-/* Usuario administrador con privilegios */
 const ADMIN_CODE = "S-ADMIN2026";
+const INITIAL_ACCESS_KEY = "ELMA2026";
 
-/* Clave de primer acceso global (solo la primera vez) */
-const INITIAL_ACCESS_KEY = "ELMA-2026-ADMIN";
+// =============================================================================
+// FUNCIÓN PARA NORMALIZAR NOMBRES A TITLE CASE
+// =============================================================================
+function toTitleCase(str) {
+  if (!str) return "";
+  return str
+    .toLowerCase()
+    .split(/\s+/)
+    .map(word => {
+      const lowers = ['de', 'del', 'la', 'las', 'los', 'el', 'y', 'o', 'a'];
+      if (lowers.includes(word)) return word;
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(' ');
+}
 
-/* ============================================================
-   🧂 SALT + HASH + STORAGE
-   ============================================================ */
-
+// =============================================================================
+// FUNCIONES DE HASH Y ALMACENAMIENTO
+// =============================================================================
 function elma_generateSalt() {
   return crypto.randomUUID();
 }
-
 async function elma_hash(text) {
   const uint8 = new TextEncoder().encode(text);
   const digest = await crypto.subtle.digest("SHA-256", uint8);
@@ -273,48 +236,42 @@ async function elma_hash(text) {
     .map(b => b.toString(16).padStart(2, "0"))
     .join("");
 }
-
 function elma_storeHash(code, hash, salt) {
   localStorage.setItem("elmaPass-" + code, JSON.stringify({ hash, salt }));
 }
-
 function elma_getStoredHash(code) {
   const raw = localStorage.getItem("elmaPass-" + code);
   if (!raw) return null;
   try { return JSON.parse(raw); } catch { return null; }
 }
 
-/* ============================================================
-   🔍 FUNCIONES UTILITARIAS
-   ============================================================ */
-
+// =============================================================================
+// UTILITARIOS
+// =============================================================================
 let currentUser = null;
 
-/* ======================= ENCONTRAR USUARIO ======================= */
 function findUserByCode(code) {
-  return ELMA_USERS.find(
-    u => u.code.toUpperCase() === (code || "").toUpperCase()
-  ) || null;
+  const searchCode = (code || "").trim().toUpperCase();
+  return ELMA_USERS.find(u => (u.code || "").toUpperCase() === searchCode) || null;
 }
 
-const loginCard   = document.getElementById("login-card");
-const menuCard    = document.getElementById("menu-card");
+const loginCard = document.getElementById("login-card");
+const menuCard = document.getElementById("menu-card");
 const menuSubtitle = document.getElementById("menu-subtitle");
+const loadingUsersEl = document.getElementById("loading-users");
 
 function showMenu(user) {
   loginCard.style.display = "none";
-  menuCard.style.display  = "block";
+  menuCard.style.display = "block";
   currentUser = user;
-  menuSubtitle.textContent =
-    `Bienvenido(a), ${user.name}. Herramientas académicas para planeamientos y rúbricas.`;
+  const displayName = toTitleCase(user.name);
+  menuSubtitle.textContent = `Bienvenido(a), ${displayName}. Herramientas académicas para planeamientos y rúbricas.`;
   if (user.code === "S-ADMIN2026") {
     document.getElementById("admin-panel-button").style.display = "block";
-}
-
-  // Botón extra de admin
+  }
   if (user.code === ADMIN_CODE && !document.getElementById("elma-admin-recovery")) {
     const cont = document.createElement("div");
-    cont.style.marginTop = "18px";
+    cont.style.marginTop = "20px";
     cont.innerHTML = `
       <button class="btn" id="elma-admin-recovery"
         style="background:#146c43;border-color:#146c43;">
@@ -330,20 +287,46 @@ function showMenu(user) {
 
 function showLogin() {
   currentUser = null;
-  menuCard.style.display  = "none";
+  menuCard.style.display = "none";
   loginCard.style.display = "block";
-  loginError.textContent  = "";
-  codeInput.value = "";
-  passInput.value = "";
+  document.getElementById("login-error").textContent = "";
+  document.getElementById("user-code").value = "";
+  document.getElementById("user-pass").value = "";
 }
 
-/* ============================================================
-   💠 LOGIN
-   ============================================================ */
+// =============================================================================
+// CARGA DE USUARIOS DESDE users.enc + NORMALIZACIÓN
+// =============================================================================
+async function loadUsersFromEnc() {
+  loadingUsersEl.style.display = "block";
+  try {
+    const users = await window.decoder.loadUsers();
+    if (Array.isArray(users) && users.length > 0) {
+      ELMA_USERS = users.map(user => ({
+        ...user,
+        name: toTitleCase(user.name || "")
+      }));
+      console.log(`Cargados y normalizados ${ELMA_USERS.length} usuarios desde users.enc`);
+    } else {
+      console.warn("users.enc cargado pero vacío o inválido");
+      alert("No se encontraron usuarios válidos en users.enc. Contacte al administrador.");
+    }
+  } catch (err) {
+    console.error("Error al cargar users.enc:", err);
+    alert("No se pudo cargar la lista de usuarios.\nVerifique que decoder.js y users.enc estén disponibles.\nError: " + err.message);
+  } finally {
+    loadingUsersEl.style.display = "none";
+  }
+}
 
-const formLogin  = document.getElementById("login-form");
-const codeInput  = document.getElementById("user-code");
-const passInput  = document.getElementById("user-pass");
+loadUsersFromEnc();
+
+// =============================================================================
+// LOGIN
+// =============================================================================
+const formLogin = document.getElementById("login-form");
+const codeInput = document.getElementById("user-code");
+const passInput = document.getElementById("user-pass");
 const loginError = document.getElementById("login-error");
 
 formLogin.addEventListener("submit", async ev => {
@@ -353,13 +336,24 @@ formLogin.addEventListener("submit", async ev => {
   const code = codeInput.value.trim();
   const pass = passInput.value.trim();
 
+  if (ELMA_USERS.length === 0) {
+    loginError.textContent = "Cargando lista de usuarios… espere un momento.";
+    for (let i = 0; i < 4; i++) {
+      await new Promise(r => setTimeout(r, 800));
+      if (ELMA_USERS.length > 0) break;
+    }
+    if (ELMA_USERS.length === 0) {
+      loginError.textContent = "No se pudo cargar la lista de usuarios. Recargue la página.";
+      return;
+    }
+  }
+
   const user = findUserByCode(code);
   if (!user) {
     loginError.textContent = "Código de usuario no reconocido.";
     return;
   }
 
-  // 1️⃣ Si ya tiene contraseña individual → validar con hash
   const stored = elma_getStoredHash(user.code);
   if (stored) {
     const h = await elma_hash(stored.salt + pass);
@@ -372,30 +366,38 @@ formLogin.addEventListener("submit", async ev => {
     return;
   }
 
-  // 2️⃣ Primer acceso → requiere clave global INITIAL_ACCESS_KEY
   if (pass !== INITIAL_ACCESS_KEY) {
     loginError.textContent = "Contraseña incorrecta (primer acceso).";
     return;
   }
 
-  // 3️⃣ Primer acceso válido → generar contraseña automática
   await elma_showAutoPassword(user);
   localStorage.setItem("elmaUser", user.code);
   showMenu(user);
 });
 
-/* restaurar sesión previa si existe */
+// Restaurar sesión
 (function restoreLogin() {
   const last = localStorage.getItem("elmaUser");
   if (!last) return;
-  const u = findUserByCode(last);
-  if (u) showMenu(u);
+  if (ELMA_USERS.length === 0) {
+    const check = setInterval(() => {
+      if (ELMA_USERS.length > 0) {
+        clearInterval(check);
+        const u = findUserByCode(last);
+        if (u) showMenu(u);
+      }
+    }, 600);
+    setTimeout(() => clearInterval(check), 5000);
+  } else {
+    const u = findUserByCode(last);
+    if (u) showMenu(u);
+  }
 })();
 
-/* ============================================================
-   🔒 GENERAR CONTRASEÑA AUTOMÁTICA + POPUP + "PDF"
-   ============================================================ */
-
+// =============================================================================
+// GENERAR CONTRASEÑA + POPUP + PDF
+// =============================================================================
 function elma_generatePassword() {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789@$%&*?";
   let res = "";
@@ -408,20 +410,16 @@ function elma_generatePassword() {
 function elma_createPopup(html) {
   const wrap = document.createElement("div");
   wrap.style.position = "fixed";
-  wrap.style.top = 0;
-  wrap.style.left = 0;
-  wrap.style.width = "100%";
-  wrap.style.height = "100%";
-  wrap.style.background = "rgba(0,0,0,.55)";
+  wrap.style.inset = "0";
+  wrap.style.background = "rgba(0,0,0,0.5)";
   wrap.style.display = "flex";
   wrap.style.alignItems = "center";
   wrap.style.justifyContent = "center";
-  wrap.style.zIndex = 9999;
-
+  wrap.style.zIndex = "9999";
   wrap.innerHTML = `
-    <div style="background:white;padding:24px 28px;border-radius:16px;max-width:410px;text-align:center;">
+    <div style="background:#fff;padding:28px;border-radius:12px;max-width:420px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.2);">
       ${html}
-      <button style="margin-top:18px;padding:10px 18px;font-weight:600;border-radius:10px;border:none;background:#0d6efd;color:white;cursor:pointer;" id="elmaOKbtn">Aceptar</button>
+      <button style="margin-top:20px;padding:10px 24px;font-weight:600;border:none;border-radius:8px;background:var(--azul-boton);color:white;cursor:pointer;" id="elmaOKbtn">Aceptar</button>
     </div>
   `;
   document.body.appendChild(wrap);
@@ -432,10 +430,10 @@ function elma_downloadPDF(user, password) {
   const win = window.open("", "_blank");
   win.document.write(`
     <h2>Credenciales ELMA-Suite</h2>
-    <p><b>Docente:</b> ${user.name}</p>
-    <p><b>Código de usuario:</b> ${user.code}</p>
+    <p><b>Docente:</b> ${toTitleCase(user.name)}</p>
+    <p><b>Código:</b> ${user.code}</p>
     <p><b>Contraseña generada:</b> ${password}</p>
-    <p>Se recomienda cambiar esta contraseña desde el menú principal del sistema.</p>
+    <p>Recomendamos cambiar esta contraseña desde el menú principal.</p>
   `);
   win.print();
   win.close();
@@ -446,38 +444,32 @@ async function elma_showAutoPassword(user) {
   const salt = elma_generateSalt();
   const hash = await elma_hash(salt + password);
   elma_storeHash(user.code, hash, salt);
-
   elma_createPopup(`
     <h3>Contraseña generada</h3>
-    <p>Bienvenido(a) ${user.name}.</p>
-    <p>Su contraseña para ELMA-Suite es:</p>
-    <p style="font-size:1.35rem;font-weight:700;color:#003366;">${password}</p>
-    <p>⚠ Guárdela en un lugar seguro.</p>
-    <button id="elmaPDFbtn" style="margin-top:12px;padding:8px 14px;border:1px solid #003366;background:white;color:#003366;font-weight:600;border-radius:8px;cursor:pointer;">
+    <p>Bienvenido(a) ${toTitleCase(user.name)}.</p>
+    <p>Su contraseña es:</p>
+    <p style="font-size:1.4rem;font-weight:700;color:var(--azul-texto);letter-spacing:1px;">${password}</p>
+    <p style="margin-top:16px;color:#dc2626;font-weight:500;">Guárdela en un lugar seguro.</p>
+    <button id="elmaPDFbtn" style="margin-top:16px;padding:10px 20px;border:1px solid var(--azul-texto);background:white;color:var(--azul-texto);font-weight:600;border-radius:8px;cursor:pointer;">
       Descargar PDF
     </button>
   `);
-
-  document.getElementById("elmaPDFbtn").onclick = () => {
-    elma_downloadPDF(user, password);
-  };
+  document.getElementById("elmaPDFbtn").onclick = () => elma_downloadPDF(user, password);
 }
 
-/* ============================================================
-   🔄 CAMBIO DE CONTRASEÑA EN EL MENÚ
-   ============================================================ */
-
-const changeMenuBtn   = document.getElementById('btn-open-change-menu');
+// =============================================================================
+// CAMBIO DE CONTRASEÑA
+// =============================================================================
+const changeMenuBtn = document.getElementById('btn-open-change-menu');
 const changePanelMenu = document.getElementById('change-pass-panel-menu');
-const changeFormMenu  = document.getElementById('change-pass-form-menu');
+const changeFormMenu = document.getElementById('change-pass-form-menu');
 const currentPassMenu = document.getElementById('current-pass-menu');
-const newPassMenu     = document.getElementById('new-pass-menu');
-const newPass2Menu    = document.getElementById('new-pass2-menu');
+const newPassMenu = document.getElementById('new-pass-menu');
+const newPass2Menu = document.getElementById('new-pass2-menu');
 const changeErrorMenu = document.getElementById('change-pass-error-menu');
 
 changeMenuBtn.onclick = () => {
-  changePanelMenu.style.display =
-    changePanelMenu.style.display === "block" ? "none" : "block";
+  changePanelMenu.style.display = changePanelMenu.style.display === "block" ? "none" : "block";
   changeErrorMenu.textContent = "";
 };
 
@@ -487,7 +479,7 @@ changeFormMenu.addEventListener("submit", async ev => {
   if (!currentUser) return;
 
   const stored = elma_getStoredHash(currentUser.code);
-  const c   = currentPassMenu.value;
+  const c = currentPassMenu.value;
   const np1 = newPassMenu.value;
   const np2 = newPass2Menu.value;
 
@@ -495,6 +487,7 @@ changeFormMenu.addEventListener("submit", async ev => {
     changeErrorMenu.textContent = "Las contraseñas nuevas no coinciden.";
     return;
   }
+
   const h = await elma_hash(stored.salt + c);
   if (h !== stored.hash) {
     changeErrorMenu.textContent = "Contraseña actual incorrecta.";
@@ -504,197 +497,102 @@ changeFormMenu.addEventListener("submit", async ev => {
   const salt = elma_generateSalt();
   const hash = await elma_hash(salt + np1);
   elma_storeHash(currentUser.code, hash, salt);
-  changeErrorMenu.style.color = "#168821";
-  changeErrorMenu.textContent = "Contraseña actualizada.";
+  changeErrorMenu.style.color = "#10b981";
+  changeErrorMenu.textContent = "Contraseña actualizada correctamente.";
 });
 
-/* ============================================================
-   🚪 CERRAR SESIÓN
-   ============================================================ */
-
-const logoutBtn = document.getElementById('btn-logout');
-logoutBtn.onclick = () => {
+// =============================================================================
+// CERRAR SESIÓN
+// =============================================================================
+document.getElementById('btn-logout').onclick = () => {
   localStorage.removeItem("elmaUser");
   showLogin();
 };
 
-/* ============================================================
-   🔓 PANEL DE RECUPERACIÓN PARA ADMINISTRADOR (SNIT)
-   ============================================================ */
-
+// =============================================================================
+// RECUPERACIÓN ADMIN (SNIT)
+// =============================================================================
 function elma_showAdminRecovery() {
   const list = ELMA_USERS
     .map(u => `<option value="${u.code}">${u.name} (${u.code})</option>`)
     .join("");
-
   elma_createPopup(`
     <h3>Recuperación de contraseñas</h3>
     <p>Seleccione un usuario para regenerar su contraseña:</p>
-
-    <select id="elma-admin-target"
-      style="margin-top:8px;padding:6px;border-radius:6px;width:94%;">
+    <select id="elma-admin-target" style="margin:12px 0;padding:8px;width:100%;border-radius:6px;border:1px solid #cbd5e1;">
       ${list}
     </select>
-
-    <button id="elma-admin-gen"
-      style="margin-top:14px;padding:10px 14px;border:none;border-radius:8px;background:#146c43;color:white;font-weight:600;">
+    <button id="elma-admin-gen" style="padding:12px 24px;border:none;border-radius:8px;background:#146c43;color:white;font-weight:600;cursor:pointer;">
       Generar nueva contraseña
     </button>
-
-    <div id="elma-admin-result"
-      style="margin-top:12px;font-weight:600;color:#003366;"></div>
+    <div id="elma-admin-result" style="margin-top:16px;font-weight:600;color:var(--azul-texto);"></div>
   `);
-
   document.getElementById("elma-admin-gen").onclick = async () => {
     const code = document.getElementById("elma-admin-target").value;
     const user = findUserByCode(code);
     if (!user) return;
-
     const pass = elma_generatePassword();
     const salt = elma_generateSalt();
     const hash = await elma_hash(salt + pass);
     elma_storeHash(code, hash, salt);
-
-    document.getElementById("elma-admin-result").innerHTML =
-      `Nueva contraseña: <span style="font-size:1.25rem;color:#0d2c56;">${pass}</span>`;
+    document.getElementById("elma-admin-result").textContent = `Nueva contraseña: ${pass}`;
   };
 }
-
-/* ============================================================
-   ⌨ ACTIVADOR DE ADMINISTRADOR POR SNIT
-   ============================================================ */
 
 document.addEventListener("keydown", ev => {
   if (ev.key !== "Enter") return;
   if (passInput.value !== ELMA_SNIT_KEY) return;
   ev.preventDefault();
-
   const code = codeInput.value.trim();
   if (code === ADMIN_CODE) {
     elma_showAdminRecovery();
   }
 });
-
 </script>
-<!-- ================================
-     PANEL ADMINISTRATIVO COMPLETO
-     ================================ -->
 
-<div id="adminPanel" style="
-    display:none;
-    position:fixed; 
-    top:0; left:0;
-    width:100%; height:100%;
-    background:rgba(0,0,0,0.60);
-    z-index:9999;
-">
-   <div style="
-       width:80%; 
-       max-width:900px; 
-       margin:40px auto;
-       background:#fff;
-       padding:20px;
-       border-radius:10px;
-       box-shadow:0 0 25px rgba(0,0,0,0.4);
-       overflow-y:auto;
-       max-height:90%;
-    ">
-
-     <h2 style="text-align:center; margin-bottom:10px;">Administración de Usuarios ELMA-Suite</h2>
-
-     <div style="text-align:right; margin-bottom:12px;">
-        <button onclick="closeAdmin()" style="
-            background:#d9534f; 
-            padding:6px 10px; 
-            color:white; 
-            border:none;
-            border-radius:6px;
-        ">Cerrar</button>
-     </div>
-
-     <!-- BUSCADOR -->
-     <input 
-       id="adminSearch" 
-       type="text" 
-       placeholder="Buscar por nombre o código..."
-       oninput="filterAdminUsers()"
-       style="
-           width:100%;
-           padding:10px;
-           margin-bottom:15px;
-           border-radius:6px;
-           border:1px solid #888;
-       "
-     >
-
-     <!-- TABLA -->
-     <table style="width:100%; border-collapse:collapse;">
-       <thead>
-         <tr style="background:#22577A; color:white;">
-           <th style="padding:8px;">Código</th>
-           <th>Nombre</th>
-           <th>Nivel</th>
-           <th style="width:140px;">Acciones</th>
-         </tr>
-       </thead>
-       <tbody id="adminUsersTable"></tbody>
-     </table>
-
-     <!-- BOTÓN AGREGAR -->
-     <div style="margin-top:20px; text-align:center;">
-        <button onclick="openAddAdminUser()" style="
-           background:#38A3A5;
-           padding:10px 20px;
-           color:white;
-           font-weight:bold;
-           border:none;
-           border-radius:6px;
-        ">+ Nuevo Usuario</button>
-     </div>
-
-     <!-- BOTÓN EXPORTAR -->
-     <div style="margin-top:20px; text-align:center;">
-        <button onclick="exportUsersJSON()" style="
-           background:#22577A;
-           padding:10px 20px;
-           color:white;
-           border:none;
-           border-radius:6px;
-        ">Descargar respaldo (users.json)</button>
-     </div>
-
-   </div>
+<!-- PANEL ADMINISTRATIVO -->
+<div id="adminPanel" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:9999;">
+  <div style="width:85%;max-width:960px;margin:40px auto;background:#fff;padding:24px;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.25);overflow-y:auto;max-height:88vh;">
+    <h2 style="text-align:center;margin-bottom:16px;">Administración de Usuarios ELMA-Suite</h2>
+    <div style="text-align:right;margin-bottom:16px;">
+      <button onclick="closeAdmin()" style="background:#d9534f;padding:8px 16px;color:white;border:none;border-radius:6px;cursor:pointer;">Cerrar</button>
+    </div>
+    <input id="adminSearch" type="text" placeholder="Buscar por nombre o código..." oninput="filterAdminUsers()" style="width:100%;padding:12px;margin-bottom:20px;border:1px solid #cbd5e1;border-radius:8px;font-size:1rem;">
+    <table style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr style="background:#1e40af;color:white;">
+          <th style="padding:12px;text-align:left;">Código</th>
+          <th style="padding:12px;text-align:left;">Nombre</th>
+          <th style="padding:12px;text-align:left;">Nivel</th>
+          <th style="padding:12px;text-align:center;width:180px;">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="adminUsersTable"></tbody>
+    </table>
+    <div style="margin-top:24px;text-align:center;">
+      <button onclick="openAddAdminUser()" style="background:#10b981;padding:12px 28px;color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;">+ Nuevo Usuario</button>
+    </div>
+    <div style="margin-top:16px;text-align:center;">
+      <button onclick="exportUsersJSON()" style="background:#1e40af;padding:12px 28px;color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;">Descargar respaldo (users.json)</button>
+    </div>
+  </div>
 </div>
+
 <!-- MODAL ADMIN -->
-<div id="adminModal" style="
-   display:none; position:fixed; top:0; left:0;
-   width:100%; height:100%; background:rgba(0,0,0,0.5);
-   z-index:10000;
-">
-  <div style="
-     width:400px; margin:10% auto; background:#fff; padding:20px;
-     border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.4);
-   ">
-     <h3 id="adminModalTitle">Nuevo Usuario</h3>
-
-     <label>Nombre completo:</label>
-     <input id="adminNameInput" type="text" style="width:100%; padding:6px; margin-bottom:10px;">
-
-     <label>Nivel:</label>
-     <select id="adminLevelInput" style="width:100%; padding:6px; margin-bottom:10px;">
-        <option value="P">Primaria</option>
-        <option value="S">Secundaria</option>
-     </select>
-
-     <div style="text-align:right;">
-        <button onclick="closeAdminModal()" style="
-            background:#888; padding:6px 10px; color:white; border:none; border-radius:6px;
-        ">Cancelar</button>
-
-        <button onclick="saveAdminUser()" style="
-            background:#38A3A5; padding:6px 10px; color:white; border:none; border-radius:6px;
-        ">Guardar</button>
-     </div>
+<div id="adminModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10000;">
+  <div style="width:420px;margin:10vh auto;background:#fff;padding:28px;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.3);">
+    <h3 id="adminModalTitle">Nuevo Usuario</h3>
+    <label style="display:block;margin:16px 0 6px;">Nombre completo</label>
+    <input id="adminNameInput" type="text" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:6px;">
+    <label style="display:block;margin:16px 0 6px;">Nivel</label>
+    <select id="adminLevelInput" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:6px;">
+      <option value="P">Primaria</option>
+      <option value="S">Secundaria</option>
+    </select>
+    <div style="text-align:right;margin-top:24px;">
+      <button onclick="closeAdminModal()" style="padding:10px 20px;margin-right:12px;background:#6b7280;color:white;border:none;border-radius:6px;cursor:pointer;">Cancelar</button>
+      <button onclick="saveAdminUser()" style="padding:10px 20px;background:#10b981;color:white;border:none;border-radius:6px;cursor:pointer;">Guardar</button>
+    </div>
   </div>
 </div>
 
