@@ -228,11 +228,12 @@
     if (btnExportIndicadores) {
       btnExportIndicadores.addEventListener("click", () => {
         try {
-          const indicadores = Array.from(
-            document.querySelectorAll("#didactico-section .indicador-texto")
-          )
-            .map(el => el.value.trim())
-            .filter(txt => txt.length > 0);
+         const indicadores = Array.from(
+ 	   document.querySelectorAll("#didactico-section textarea")
+	   )
+  	.map(el => el.value.trim())
+	.filter(txt => txt.length > 0);
+
 
           if (indicadores.length === 0) {
             alert("No hay indicadores para exportar.");
