@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELMA-Suite | Módulo de Proyectos</title>
+
+    <!-- IMPORTAR ESTILOS GENERALES DE ELMA -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- ESTILO ESPECÍFICO DEL MÓDULO -->
+    <link rel="stylesheet" href="icpi/icpi.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="icpi-header">
+        <h1>Módulo de Proyectos Interdisciplinarios</h1>
+        <div class="icpi-header-buttons">
+            <button id="btnNuevoProyecto">+ Nuevo Proyecto</button>
+            <button id="btnBanco">Banco Institucional</button>
+        </div>
+    </header>
+
+    <!-- DASHBOARD PRINCIPAL -->
+    <section id="icpiDashboard" class="dashboard">
+
+        <!-- TARJETAS POR NIVEL -->
+        <div class="nivel-card" onclick="verMapa(7)">
+            <h2>7° Año</h2>
+            <p>Convergencias: 12</p>
+            <p>Proyectos: 3</p>
+            <p>Sugeridos: 5</p>
+        </div>
+
+        <div class="nivel-card" onclick="verMapa(8)">
+            <h2>8° Año</h2>
+            <p>Convergencias: 15</p>
+            <p>Proyectos: 4</p>
+            <p>Sugeridos: 6</p>
+        </div>
+
+        <div class="nivel-card" onclick="verMapa(9)">
+            <h2>9° Año</h2>
+            <p>Convergencias: 10</p>
+            <p>Proyectos: 2</p>
+            <p>Sugeridos: 4</p>
+        </div>
+
+        <div class="nivel-card" onclick="verMapa(10)">
+            <h2>10° Año</h2>
+            <p>Convergencias: 18</p>
+            <p>Proyectos: 5</p>
+            <p>Sugeridos: 7</p>
+        </div>
+
+        <div class="nivel-card" onclick="verMapa(11)">
+            <h2>11° Año</h2>
+            <p>Convergencias: 20</p>
+            <p>Proyectos: 8</p>
+            <p>Sugeridos: 10</p>
+        </div>
+
+    </section>
+
+    <!-- PANEL MODAL PARA PROYECTOS -->
+    <div id="modalProyecto" class="modal">
+        <div class="modal-content">
+            <span class="cerrar" onclick="cerrarModal()">&times;</span>
+            <h2 id="modalTitulo">Nuevo Proyecto</h2>
+
+            <div class="campo">
+                <label>Nivel:</label>
+                <select id="nivelProyecto">
+                    <option value="7">7°</option>
+                    <option value="8">8°</option>
+                    <option value="9">9°</option>
+                    <option value="10">10°</option>
+                    <option value="11">11°</option>
+                </select>
+            </div>
+
+            <div class="campo">
+                <label>Asignaturas involucradas:</label>
+                <div class="checklist">
+                    <label><input type="checkbox" value="Español"> Español</label>
+                    <label><input type="checkbox" value="Matemática"> Matemática</label>
+                    <label><input type="checkbox" value="Ciencias"> Ciencias</label>
+                    <label><input type="checkbox" value="Inglés"> Inglés</label>
+                    <label><input type="checkbox" value="Francés"> Francés</label>
+                    <label><input type="checkbox" value="Informática"> Informática</label>
+                    <label><input type="checkbox" value="EF"> Educación Física</label>
+                    <label><input type="checkbox" value="Artes"> Artes</label>
+                    <label><input type="checkbox" value="Religión"> Religión</label>
+                    <label><input type="checkbox" value="Hogar"> Hogar</label>
+                </div>
+            </div>
+
+            <div class="campo">
+                <label>Objetivo General:</label>
+                <textarea id="objetivoGeneral" placeholder="Escribe el objetivo general del proyecto..."></textarea>
+            </div>
+
+            <div class="campo">
+                <label>Productos:</label>
+                <textarea id="productosProyecto" placeholder="Ej: Afiche, presentación, informe, prototipo..."></textarea>
+            </div>
+
+            <div class="campo">
+                <label>Cronograma:</label>
+                <textarea id="cronogramaProyecto"></textarea>
+            </div>
+
+            <button id="guardarProyecto">Guardar Proyecto</button>
+        </div>
+    </div>
+
+    <script src="icpi/icpi.js"></script>
+</body>
+</html>

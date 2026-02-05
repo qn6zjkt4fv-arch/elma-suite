@@ -148,3 +148,8 @@ async function sha256(text) {
 
 // ====================================================
 //  GUARDAR NUEVO USUARIO O EDIC
+
+function initAdmin() {
+    renderUsersTable();
+}
+
