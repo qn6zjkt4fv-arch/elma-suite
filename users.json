@@ -1,83 +1,242 @@
-[
-  {"code":"S-ADMIN2026","name":"Administrador General"},
+{
+  "users": [
+    {
+      "username": "S-ADMIN2026",
+      "password": "ELMA2026",
+      "name": "Administrador General",
+      "role": "admin"
+    },
 
-  {"code":"P-AGUILM2026","name":"Aguilar Mirna"},
-  {"code":"P-AGUERL2026","name":"Aguero Lucia de los Angeles"},
-  {"code":"P-AGUIRM2026","name":"Aguirre Melissa"},
-  {"code":"P-BALTOC2026","name":"Baltodano Diana Cristina"},
-  {"code":"P-BARRAM2026","name":"Barrantes Maylin Alejandra"},
-  {"code":"P-BARRIL2026","name":"Barrios Lorella"},
-  {"code":"P-BERMUS2026","name":"Bermudez Shirley Vivian"},
-  {"code":"P-CABEZA2026","name":"Cabezas Anell"},
-  {"code":"P-CARVAA2026","name":"Carvajal Adriana"},
-  {"code":"P-CAZARY2026","name":"Cazares Yesenia"},
-  {"code":"P-CASTRK2026","name":"Castro Karla"},
-  {"code":"P-CONEUE2026","name":"Con Eugenia Maria"},
-  {"code":"P-CRUZKA2026","name":"Cruz Sor Kassandra"},
-  {"code":"P-FALLAC2026","name":"Fallas Carmen Maria"},
-  {"code":"P-FONSEM2026","name":"Fonseca Maria Gabriela"},
-  {"code":"P-GARBOR2026","name":"Garbanzo Rocio Lorena"},
-  {"code":"P-GARCIM2026","name":"Garcia Maria de los Angeles"},
-  {"code":"P-GONZAP2026","name":"Gonzalez Paula"},
-  {"code":"P-HERRAM2026","name":"Herrera Maria Gabriela"},
-  {"code":"P-HIDALJ2026","name":"Hidalgo Julie"},
-  {"code":"P-JIMENM2026","name":"Jimenez Mauricio"},
-  {"code":"P-LEDEZK2026","name":"Ledezma Karla Fiorella"},
-  {"code":"P-MATAMO2026","name":"Matamoros Cristina Maria"},
-  {"code":"P-MELENM2026","name":"Melendez Maureen Paola"},
-  {"code":"P-MENAGU2026","name":"Mena Guiselle"},
-  {"code":"P-MENAEV2026","name":"Mena Eva Alaria"},
-  {"code":"P-MENDEH2026","name":"Mendez Helen"},
-  {"code":"P-MENDEO2026","name":"Mendez Laura Vanessa"},
-  {"code":"P-MENDEF2026","name":"Mendez Fabiola"},
-  {"code":"P-MENESE2026","name":"Meneses Mainor"},
-  {"code":"P-MONJEA2026","name":"Monje Andre Maria"},
-  {"code":"P-MONTER2026","name":"Montero Adriana"},
-  {"code":"P-MORAA N2026","name":"Mora Ana Belen"},
-  {"code":"P-MURILA2026","name":"Murillo Adriana"},
-  {"code":"P-OBANDO2026","name":"Obando Maria Jose"},
-  {"code":"P-PADILM2026","name":"Padilla Maria Isel"},
-  {"code":"P-PUTOYM2026","name":"Putoy Sor Martha"},
-  {"code":"P-RIVERA2026","name":"Rivera Adriana"},
-  {"code":"P-ROJASG2026","name":"Rojas Guiselle"},
-  {"code":"P-SANCHE2026","name":"Sanchez Pamela"},
-  {"code":"P-SERRAT2026","name":"Serrano Tatiana"},
-  {"code":"P-SOLANO2026","name":"Solano Ana Laura"},
-  {"code":"P-SOLISM2026","name":"Solis Marcela Jenny"},
-  {"code":"P-VARGAK2026","name":"Vargas Karol Maria"},
-  {"code":"P-VARGAL2026","name":"Vargas Liseth"},
-  {"code":"P-VICTOK2026","name":"Victor Kendy"},
-  {"code":"P-VILLAD2026","name":"Villalobos Douglas Javier"},
-  {"code":"P-ZUNIGN2026","name":"Zuniga Natalia"},
+    /* ======================================================
+       DOCENTES DE SECUNDARIA (SIN CAMBIOS)
+       ====================================================== */
 
-  {"code":"S-AGUILI2026","name":"Aguilar Iliana"},
-  {"code":"S-ALVARK2026","name":"Alvarado Keilyn"},
-  {"code":"S-ANCHIC2026","name":"Anchía Carolina"},
-  {"code":"S-ANDERC2026","name":"Anderson Carlos"},
-  {"code":"S-ARIASL2026","name":"Arias Laura"},
-  {"code":"S-AVILAN2026","name":"Avila Natalia"},
-  {"code":"S-BERMUY2026","name":"Bermudez Yehisy"},
-  {"code":"S-CABEZA2026","name":"Cabezas Annell"},
-  {"code":"S-CALVOS2026","name":"Calvo Susan"},
-  {"code":"S-CASTIK2026","name":"Castillo Katherine"},
-  {"code":"S-DELGAM2026","name":"Delgado Marlen"},
-  {"code":"S-ESPINN2026","name":"Espinoza Sor Nazareth"},
-  {"code":"S-FONSEA2026","name":"Fonseca Alexander"},
-  {"code":"S-HENRIC2026","name":"Henriquez Cristina"},
-  {"code":"S-HERNAC2026","name":"Hernandez Carmen"},
-  {"code":"S-MARINM2026","name":"Marin Mariela"},
-  {"code":"S-MARTIE2026","name":"Martinez Eduardo"},
-  {"code":"S-MCADAM2026","name":"McAdam Aldo"},
-  {"code":"S-NAVARL2026","name":"Navarro Leidy"},
-  {"code":"S-NUNEZM2026","name":"Nunez Maricela"},
-  {"code":"S-PIEDRD2026","name":"Piedra Daniela"},
-  {"code":"S-PORRASS2026","name":"Porras Silvia"},
-  {"code":"S-PRADOM2026","name":"Prado Maria Fernanda"},
-  {"code":"S-ROMERL2026","name":"Romero Luis"},
-  {"code":"S-SALASV2026","name":"Salas Valeria"},
-  {"code":"S-SEQUEA2026","name":"Sequeira Allan"},
-  {"code":"S-ULATEM2026","name":"Ulate Mabel"},
-  {"code":"S-ULATES2026","name":"Ulate Sor Victoria"},
-  {"code":"S-VENEGK2026","name":"Venegas Karla"},
-  {"code":"S-ZUNIGP2026","name":"Zuniga Paola"}
-]
+    {
+      "username": "S-aguili2026",
+      "password": "ELMA2026",
+      "name": "Aguilar Iliana",
+      "role": "docente"
+    },
+    {
+      "username": "S-alvarke2026",
+      "password": "ELMA2026",
+      "name": "Alvarado Keilyn",
+      "role": "docente"
+    },
+    {
+      "username": "S-anchiac2026",
+      "password": "ELMA2026",
+      "name": "Anchía Carolina",
+      "role": "docente"
+    },
+    {
+      "username": "S-anderc2026",
+      "password": "ELMA2026",
+      "name": "Anderson Carlos",
+      "role": "docente"
+    },
+    {
+      "username": "S-ariasl2026",
+      "password": "ELMA2026",
+      "name": "Arias Laura",
+      "role": "docente"
+    },
+    {
+      "username": "S-avilan2026",
+      "password": "ELMA2026",
+      "name": "Ávila Natalia",
+      "role": "docente"
+    },
+    {
+      "username": "S-bermy2026",
+      "password": "ELMA2026",
+      "name": "Bermúdez Yehisy",
+      "role": "docente"
+    },
+    {
+      "username": "S-cabeza2026",
+      "password": "ELMA2026",
+      "name": "Cabezas Annell",
+      "role": "docente"
+    },
+    {
+      "username": "S-calvos2026",
+      "password": "ELMA2026",
+      "name": "Calvo Susan",
+      "role": "docente"
+    },
+    {
+      "username": "S-castik2026",
+      "password": "ELMA2026",
+      "name": "Castillo Katherine",
+      "role": "docente"
+    },
+    {
+      "username": "S-delgaj2026",
+      "password": "ELMA2026",
+      "name": "Delgado Marlen",
+      "role": "docente"
+    },
+    {
+      "username": "S-espinn2026",
+      "password": "ELMA2026",
+      "name": "Espinoza Sor Nazareth",
+      "role": "docente"
+    },
+    {
+      "username": "S-fonsea2026",
+      "password": "ELMA2026",
+      "name": "Fonseca Alexander",
+      "role": "docente"
+    },
+    {
+      "username": "S-henric2026",
+      "password": "ELMA2026",
+      "name": "Henríquez Cristina",
+      "role": "docente"
+    },
+    {
+      "username": "S-hernac2026",
+      "password": "ELMA2026",
+      "name": "Hernández Carmen",
+      "role": "docente"
+    },
+    {
+      "username": "S-marinm2026",
+      "password": "ELMA2026",
+      "name": "Marín Mariela",
+      "role": "docente"
+    },
+    {
+      "username": "S-martie2026",
+      "password": "ELMA2026",
+      "name": "Martínez Eduardo",
+      "role": "docente"
+    },
+    {
+      "username": "S-mcadma2026",
+      "password": "ELMA2026",
+      "name": "McAdam Aldo",
+      "role": "docente"
+    },
+    {
+      "username": "S-navarr2026",
+      "password": "ELMA2026",
+      "name": "Navarro Leidy",
+      "role": "docente"
+    },
+    {
+      "username": "S-nunezm2026",
+      "password": "ELMA2026",
+      "name": "Núñez Maricela",
+      "role": "docente"
+    },
+    {
+      "username": "S-porras2026",
+      "password": "ELMA2026",
+      "name": "Porras Silvia",
+      "role": "docente"
+    },
+    {
+      "username": "S-pradom2026",
+      "password": "ELMA2026",
+      "name": "Prado María Fernanda",
+      "role": "docente"
+    },
+    {
+      "username": "S-romerl2026",
+      "password": "ELMA2026",
+      "name": "Romero Luis",
+      "role": "docente"
+    },
+    {
+      "username": "S-salasv2026",
+      "password": "ELMA2026",
+      "name": "Salas Valeria",
+      "role": "docente"
+    },
+    {
+      "username": "S-sequea2026",
+      "password": "ELMA2026",
+      "name": "Sequeira Allan",
+      "role": "docente"
+    },
+    {
+      "username": "S-ulatev2026",
+      "password": "ELMA2026",
+      "name": "Ulate Mabel",
+      "role": "docente"
+    },
+    {
+      "username": "S-ulates2026",
+      "password": "ELMA2026",
+      "name": "Ulate Sor Victoria",
+      "role": "docente"
+    },
+    {
+      "username": "S-venegk2026",
+      "password": "ELMA2026",
+      "name": "Venegas Karla",
+      "role": "docente"
+    },
+    {
+      "username": "S-zunigp2026",
+      "password": "ELMA2026",
+      "name": "Zúñiga Paola",
+      "role": "docente"
+    },
+
+    /* ======================================================
+       DOCENTES DE PRIMARIA 2026 (NUEVA LISTA)
+       ====================================================== */
+
+    { "username": "P-castrk2026", "password": "ELMA2026", "name": "Karla Castro Alfaro", "role": "docente" },
+    { "username": "P-barram2026", "password": "ELMA2026", "name": "Maylín Barrantes González", "role": "docente" },
+    { "username": "P-garbar2026", "password": "ELMA2026", "name": "Rocío Garbanzo Garita", "role": "docente" },
+    { "username": "P-mongra2026", "password": "ELMA2026", "name": "Andrea Monge Ramírez", "role": "docente" },
+    { "username": "P-aguilan2026", "password": "ELMA2026", "name": "Anabella Aguilar García", "role": "docente" },
+    { "username": "P-baltda2026", "password": "ELMA2026", "name": "Diana Baltodano Anchía", "role": "docente" },
+    { "username": "P-carvja2026", "password": "ELMA2026", "name": "Adriana Carvajal Vega", "role": "docente" },
+    { "username": "P-ledezf2026", "password": "ELMA2026", "name": "Fiorella Ledezma Rojas", "role": "docente" },
+    { "username": "P-mendeh2026", "password": "ELMA2026", "name": "Hellen Méndez Barrantes", "role": "docente" },
+    { "username": "P-mendez2026", "password": "ELMA2026", "name": "Fabiola Méndez Garro", "role": "docente" },
+    { "username": "P-padilh2026", "password": "ELMA2026", "name": "Isel Padilla Hernández", "role": "docente" },
+    { "username": "P-menaev2026", "password": "ELMA2026", "name": "Eva Mena Zúñiga", "role": "docente" },
+    { "username": "P-obando2026", "password": "ELMA2026", "name": "María José Obando Arias", "role": "docente" },
+    { "username": "P-cobeug2026", "password": "ELMA2026", "name": "Eugenia Cob Pacheco", "role": "docente" },
+    { "username": "P-moraa2026", "password": "ELMA2026", "name": "Ana Belén Mora Araya", "role": "docente" },
+    { "username": "P-aguirr2026", "password": "ELMA2026", "name": "Melissa Aguirre Romero", "role": "docente" },
+    { "username": "P-sanchk2026", "password": "ELMA2026", "name": "Katherin Sánchez García", "role": "docente" },
+    { "username": "P-gonzap2026", "password": "ELMA2026", "name": "Paula González Barboza", "role": "docente" },
+    { "username": "P-fonsec2026", "password": "ELMA2026", "name": "Gabriela Fonseca García", "role": "docente" },
+    { "username": "P-herrag2026", "password": "ELMA2026", "name": "Gabriela Herrera Tencio", "role": "docente" },
+    { "username": "P-zunign2026", "password": "ELMA2026", "name": "Natalia Zúñiga Segura", "role": "docente" },
+    { "username": "P-hidalj2026", "password": "ELMA2026", "name": "Julie Hidalgo Pochet", "role": "docente" },
+    { "username": "P-garcia2026", "password": "ELMA2026", "name": "Marielos García García", "role": "docente" },
+    { "username": "P-sanchp2026", "password": "ELMA2026", "name": "Pamela Sánchez Azofeifa", "role": "docente" },
+    { "username": "P-menagu2026", "password": "ELMA2026", "name": "Guiselle Mena Murillo", "role": "docente" },
+    { "username": "P-bermcs2026", "password": "ELMA2026", "name": "Shirley Bermúdez Cordero", "role": "docente" },
+    { "username": "P-vargak2026", "password": "ELMA2026", "name": "Karol Vargas Carpio", "role": "docente" },
+    { "username": "P-fallac2026", "password": "ELMA2026", "name": "Carmen Fallas Rodríguez", "role": "docente" },
+    { "username": "P-monter2026", "password": "ELMA2026", "name": "Adriana Montero Villalobos", "role": "docente" },
+    { "username": "P-victok2026", "password": "ELMA2026", "name": "Kendy Víctor Fuentes", "role": "docente" },
+    { "username": "P-melenp2026", "password": "ELMA2026", "name": "Paola Meléndez Serrano", "role": "docente" },
+    { "username": "P-mendez2026", "password": "ELMA2026", "name": "Yariela Méndez Fernández", "role": "docente" },
+    { "username": "P-jimenm2026", "password": "ELMA2026", "name": "Mauricio Jiménez Madrigal", "role": "docente" },
+    { "username": "P-menesm2026", "password": "ELMA2026", "name": "Minor Meneses Valverde", "role": "docente" },
+    { "username": "P-rojasg2026", "password": "ELMA2026", "name": "Giselle Rojas Morelli", "role": "docente" },
+    { "username": "P-aguero2026", "password": "ELMA2026", "name": "Lucía Agüero Morales", "role": "docente" },
+    { "username": "P-rivera2026", "password": "ELMA2026", "name": "Adriana Rivera Porras", "role": "docente" },
+    { "username": "P-cabeza2026", "password": "ELMA2026", "name": "Annell Cabezas Dinarte", "role": "docente" },
+    { "username": "P-casare2026", "password": "ELMA2026", "name": "Yesenia Casares Alpízar", "role": "docente" },
+    { "username": "P-solisj2026", "password": "ELMA2026", "name": "Jenny Solís Barquero", "role": "docente" },
+    { "username": "P-putoym2026", "password": "ELMA2026", "name": "Sor Martha Putoy Rodríguez", "role": "docente" },
+    { "username": "P-cruzka2026", "password": "ELMA2026", "name": "Sor Kassandra Cruz Soza", "role": "docente" },
+    { "username": "P-aguilr2026", "password": "ELMA2026", "name": "Sor Alba Rosa Aguilera", "role": "docente" },
+    { "username": "P-solana2026", "password": "ELMA2026", "name": "Ana Laura Solano Calderón", "role": "docente" },
+    { "username": "P-serrta2026", "password": "ELMA2026", "name": "Tatiana Serrano Sandí", "role": "docente" },
+    { "username": "P-barri l2026", "password": "ELMA2026", "name": "Lorella Barrios Mendoza", "role": "docente" },
+    { "username": "P-murill2026", "password": "ELMA2026", "name": "Adriana Murillo Chinchilla", "role": "docente" },
+    { "username": "P-bartlm2026", "password": "ELMA2026", "name": "Lynda Juda Barth Mora", "role": "docente" }
+  ]
+}
