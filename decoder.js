@@ -48,7 +48,7 @@ window.decoder = (function () {
 
   async function loadUsers() {
     try {
-      const res = await fetch("users.enc");
+      const res = await fetch("users.enc?nocache=" + Date.now());
       if (!res.ok) throw new Error("No se pudo cargar users.enc");
 
       const raw = await res.text();

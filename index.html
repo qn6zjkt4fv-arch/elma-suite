@@ -366,12 +366,13 @@ formLogin.addEventListener("submit", async ev => {
     return;
   }
 
-  if (pass !== INITIAL_ACCESS_KEY) {
-    loginError.textContent = "Contraseña incorrecta (primer acceso).";
-    return;
-  }
+  // No tiene hash guardado → siempre primera vez
+  const newPass = elma_generatePassword();
+  const salt = elma_generateSalt();
+  const hash = await elma_hash(salt + newPass);
+  elma_storeHash(user.code, hash, salt);
 
-  await elma_showAutoPassword(user);
+  elma_showAutoPassword(user);
   localStorage.setItem("elmaUser", user.code);
   showMenu(user);
 });
