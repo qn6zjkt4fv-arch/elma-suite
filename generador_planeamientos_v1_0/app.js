@@ -65,6 +65,41 @@
     Engine.clearDidRows();
     Engine.addDidRow();
 
+// Mueve los listeners AQUÍ, después de renderizar las tablas
+const attachTableListeners = () => {
+  const btnAddAcad = document.getElementById("acad-add-row");
+  const btnClearAcad = document.getElementById("acad-clear-rows");
+  if (btnAddAcad) {
+    btnAddAcad.onclick = () => Engine.addAcadRow();
+    console.log("Listener adjuntado a acad-add-row"); // Para debug
+  }
+  if (btnClearAcad) {
+    btnClearAcad.onclick = Engine.clearAcadRows;
+    console.log("Listener adjuntado a acad-clear-rows");
+  }
+
+  const btnAddDid = document.getElementById("did-add-row");
+  const btnClearDid = document.getElementById("did-clear-rows");
+  if (btnAddDid) {
+    btnAddDid.onclick = () => Engine.addDidRow();
+    console.log("Listener adjuntado a did-add-row");
+  }
+  if (btnClearDid) {
+    btnClearDid.onclick = Engine.clearDidRows;
+    console.log("Listener adjuntado a did-clear-rows");
+  }
+};
+
+// Llama después del render inicial
+attachTableListeners();
+
+// Y si cambias de modo, vuelve a adjuntar (por si las secciones se ocultan/muestran)
+const originalSwitchMode = switchMode;
+switchMode = (mode) => {
+  originalSwitchMode(mode);
+  setTimeout(attachTableListeners, 100); // Pequeño delay para que el DOM se actualice
+};
+
     showWelcome();
     setStatus("Nuevo planeamiento iniciado. Selecciona el tipo para comenzar.");
   }
