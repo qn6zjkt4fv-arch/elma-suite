@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Generador users.enc — ELMA Suite</title>
+</head>
+<body style="font-family:Arial; padding:30px;">
+<h2>Generador oficial de users.enc — ELMA Suite</h2>
+<p>Presioná el botón para generar el archivo cifrado completamente compatible con decoder.js</p>
+
+<button id="gen" style="padding:10px 20px; font-size:16px;">GENERAR USERS.ENC</button>
+
+<script>
+/* ============================================================
+   📦 ENCODER — ELMA-Suite (idéntico al encoder que vos usás)
+=========================================================== */
+
+const MAP = {
+  "A": "!", "E": "@", "I": "#", "O": "$", "U": "%",
+  "a": "^", "e": "&", "i": "*", "o": "(", "u": ")"
+};
+
+function applyMap(str) {
+  return str.replace(/[AEIOUaeiou]/g, m => MAP[m] || m);
+}
+
+const KEY = 147;
+
+function xorEncode(bytes) {
+  const out = new Uint8Array(bytes.length);
+  for (let i = 0; i < bytes.length; i++) out[i] = bytes[i] ^ KEY;
+  return out;
+}
+
+/* ============================================================
+   ⭐ LISTA COMPLETA DE USUARIOS (PRIMARIA + SECUNDARIA + DIRECTIVAS + ADMIN)
+=========================================================== */
+
+const users = [
+
+  /* ===================== SECUNDARIA ===================== */
+  {code:"S-aguili2026", name:"Aguilar Iliana", pass:"ELMA2026"},
+  {code:"S-alvarke2026", name:"Alvarado Keilyn", pass:"ELMA2026"},
+  {code:"S-anchiac2026", name:"Anchía Carolina", pass:"ELMA2026"},
+  {code:"S-anderc2026", name:"Anderson Carlos", pass:"ELMA2026"},
+  {code:"S-ariasl2026", name:"Arias Laura", pass:"ELMA2026"},
+  {code:"S-avilan2026", name:"Ávila Natalia", pass:"ELMA2026"},
+  {code:"S-bermy2026", name:"Bermúdez Yehisy", pass:"ELMA2026"},
+  {code:"S-cabeza2026", name:"Cabezas Annell", pass:"ELMA2026"},
+  {code:"S-calvos2026", name:"Calvo Susan", pass:"ELMA2026"},
+  {code:"S-castik2026", name:"Castillo Katherine", pass:"ELMA2026"},
+  {code:"S-delgaj2026", name:"Delgado Marlen", pass:"ELMA2026"},
+  {code:"S-espinn2026", name:"Espinoza Sor Nazareth", pass:"ELMA2026"},
+  {code:"S-fonsea2026", name:"Fonseca Alexander", pass:"ELMA2026"},
+  {code:"S-henric2026", name:"Henríquez Cristina", pass:"ELMA2026"},
+  {code:"S-hernac2026", name:"Hernández Carmen", pass:"ELMA2026"},
+  {code:"S-marinm2026", name:"Marín Mariela", pass:"ELMA2026"},
+  {code:"S-martie2026", name:"Martínez Eduardo", pass:"ELMA2026"},
+  {code:"S-mcadma2026", name:"McAdam Aldo", pass:"ELMA2026"},
+  {code:"S-navarr2026", name:"Navarro Leidy", pass:"ELMA2026"},
+  {code:"S-nunezm2026", name:"Núñez Maricela", pass:"ELMA2026"},
+  {code:"S-piedrd2026", name:"Piedra Daniela", pass:"ELMA2026"},
+  {code:"S-porras2026", name:"Porras Silvia", pass:"ELMA2026"},
+  {code:"S-pradom2026", name:"Prado María Fernanda", pass:"ELMA2026"},
+  {code:"S-romerl2026", name:"Romero Luis", pass:"ELMA2026"},
+  {code:"S-salasv2026", name:"Salas Valeria", pass:"ELMA2026"},
+  {code:"S-sequea2026", name:"Sequeira Allan", pass:"ELMA2026"},
+  {code:"S-ulatev2026", name:"Ulate Mabel", pass:"ELMA2026"},
+  {code:"S-ulates2026", name:"Ulate Sor Victoria", pass:"ELMA2026"},
+  {code:"S-venegk2026", name:"Venegas Karla", pass:"ELMA2026"},
+  {code:"S-zunigp2026", name:"Zúñiga Paola", pass:"ELMA2026"},
+
+  /* ===================== PRIMARIA ===================== */
+  {code:"P-aguilan2026", name:"Aguilar García, Anabella", pass:"ELMA2026"},
+  {code:"P-aguirr2026", name:"Aguirre Romero, Melissa", pass:"ELMA2026"},
+  {code:"P-aguero2026", name:"Agüero Morales, Lucía", pass:"ELMA2026"},
+  {code:"P-barril2026", name:"Barrios Mendoza, Lorella", pass:"ELMA2026"},
+  {code:"P-barram2026", name:"Barrantes González, Maylín", pass:"ELMA2026"},
+  {code:"P-bartlm2026", name:"Barth Mora, Lynda Juda", pass:"ELMA2026"},
+  {code:"P-baltda2026", name:"Baltodano Anchía, Diana", pass:"ELMA2026"},
+  {code:"P-bermcs2026", name:"Bermúdez Cordero, Shirley", pass:"ELMA2026"},
+  {code:"P-cabeza2026", name:"Cabezas Dinarte, Annell", pass:"ELMA2026"},
+  {code:"P-carvja2026", name:"Carvajal Vega, Adriana", pass:"ELMA2026"},
+  {code:"P-casare2026", name:"Casares Alpízar, Yesenia", pass:"ELMA2026"},
+  {code:"P-castrk2026", name:"Castro Alfaro, Karla", pass:"ELMA2026"},
+  {code:"P-cobeug2026", name:"Cob Pacheco, Eugenia", pass:"ELMA2026"},
+  {code:"P-fallac2026", name:"Fallas Rodríguez, Carmen", pass:"ELMA2026"},
+  {code:"P-fonsec2026", name:"Fonseca García, Gabriela", pass:"ELMA2026"},
+  {code:"P-garbar2026", name:"Garbanzo Garita, Rocío", pass:"ELMA2026"},
+  {code:"P-garcia2026", name:"García García, Marielos", pass:"ELMA2026"},
+  {code:"P-gonzap2026", name:"González Barboza, Paula", pass:"ELMA2026"},
+  {code:"P-herrag2026", name:"Herrera Tencio, Gabriela", pass:"ELMA2026"},
+  {code:"P-hidalj2026", name:"Hidalgo Pochet, Julie", pass:"ELMA2026"},
+  {code:"P-jimenm2026", name:"Jiménez Madrigal, Mauricio", pass:"ELMA2026"},
+  {code:"P-ledezf2026", name:"Ledezma Rojas, Fiorella", pass:"ELMA2026"},
+  {code:"P-melenp2026", name:"Meléndez Serrano, Paola", pass:"ELMA2026"},
+  {code:"P-menagu2026", name:"Mena Murillo, Guiselle", pass:"ELMA2026"},
+  {code:"P-menaev2026", name:"Mena Zúñiga, Eva", pass:"ELMA2026"},
+  {code:"P-mendey2026", name:"Méndez Fernández, Yariela", pass:"ELMA2026"},
+  {code:"P-mendef2026", name:"Méndez Garro, Fabiola", pass:"ELMA2026"},
+  {code:"P-menesm2026", name:"Meneses Valverde, Minor", pass:"ELMA2026"},
+  {code:"P-mongra2026", name:"Monge Ramírez, Andrea", pass:"ELMA2026"},
+  {code:"P-monter2026", name:"Montero Villalobos, Adriana", pass:"ELMA2026"},
+  {code:"P-moraa2026", name:"Mora Araya, Ana Belén", pass:"ELMA2026"},
+  {code:"P-murill2026", name:"Murillo Chinchilla, Adriana", pass:"ELMA2026"},
+  {code:"P-obando2026", name:"Obando Arias, María José", pass:"ELMA2026"},
+  {code:"P-padilh2026", name:"Padilla Hernández, Isel", pass:"ELMA2026"},
+  {code:"P-putoym2026", name:"Putoy Rodríguez, Sor Martha", pass:"ELMA2026"},
+  {code:"P-rivera2026", name:"Rivera Porras, Adriana", pass:"ELMA2026"},
+  {code:"P-rojasg2026", name:"Rojas Morelli, Giselle", pass:"ELMA2026"},
+  {code:"P-sanchp2026", name:"Sánchez Azofeifa, Pamela", pass:"ELMA2026"},
+  {code:"P-sanchk2026", name:"Sánchez García, Katherin", pass:"ELMA2026"},
+  {code:"P-serrta2026", name:"Serrano Sandí, Tatiana", pass:"ELMA2026"},
+  {code:"P-solana2026", name:"Solano Calderón, Ana Laura", pass:"ELMA2026"},
+  {code:"P-solisj2026", name:"Solís Barquero, Jenny", pass:"ELMA2026"},
+  {code:"P-victok2026", name:"Víctor Fuentes, Kendy", pass:"ELMA2026"},
+  {code:"P-zunign2026", name:"Zúñiga Segura, Natalia", pass:"ELMA2026"},
+  {code:"P-cruzka2026", name:"Sor Kassandra Cruz Soza", pass:"ELMA2026"},
+  {code:"P-aguilr2026", name:"Sor Alba Rosa Aguilera", pass:"ELMA2026"},
+  {code:"P-vargak2026", name:"Vargas Carpio, Karol", pass:"ELMA2026"},
+
+  /* ===================== DIRECTIVAS ===================== */
+  {code:"D-duranm2026", name:"Sor María del Carmen Durán Calvo", pass:"ELMA2026"},
+  {code:"D-barrit2026", name:"María Teresa Barrientos Sandoval", pass:"ELMA2026"},
+  {code:"D-arroyj2026", name:"Jessie Natalia Arroyo Zúñiga", pass:"ELMA2026"},
+
+  /* ===================== ADMINISTRADOR ===================== */
+  {code:"S-ADMIN2026", name:"Administrador General", pass:"ELMA2026"}
+];
+
+/* ============================================================
+   🔐 PROCESO DE CIFRADO Y DESCARGA
+=========================================================== */
+
+async function encodeUsers(users) {
+
+  const json = JSON.stringify(users);
+  const encoder = new TextEncoder();
+  const bytes = encoder.encode(json);
+
+  const xored = xorEncode(bytes);
+
+  let bin = "";
+  for (let i = 0; i < xored.length; i++) {
+    bin += String.fromCharCode(xored[i]);
+  }
+
+  let base64 = btoa(bin);
+  base64 = applyMap(base64);
+
+  return base64;
+}
+
+
+function downloadUsersEnc(text) {
+  const blob = new Blob([text], {type:"text/plain"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "users.enc";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+
+document.getElementById("gen").onclick = async () => {
+  const enc = await encodeUsers(users);
+  downloadUsersEnc(enc);
+  alert("users.enc generado correctamente");
+};
+</script>
+
+</body>
+</html>

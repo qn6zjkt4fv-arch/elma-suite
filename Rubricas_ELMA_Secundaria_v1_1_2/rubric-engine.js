@@ -1,5 +1,5 @@
 /* ============================================================
-   rubric-engine.js — v1.0 Institucional
+   rubric-engine.js — v1.0 Institucional (con archivado en carpeta)
    - Crear / editar criterios
    - Banco de rúbricas (localStorage)
    - Importar desde planeamiento didáctico ELMA
@@ -7,9 +7,10 @@
    - Desglose de indicadores con múltiples acciones en criterios separados
    - Banco de ideas de estrategias de mediación (Bloom / Marzano)
      con filtro por área / materia institucional
+   - Archivado automático en carpeta local o descarga fallback al guardar en banco
    ============================================================ */
 (function () {
-  console.log("🟦 rubric-engine.js v1.0");
+  console.log("🟦 rubric-engine.js v1.0 (con archivado en carpeta)");
 
   const criteriaList     = document.getElementById("criteria-list");
   const addCriterionBtn  = document.getElementById("add-criterion");
@@ -717,6 +718,29 @@
     localStorage.setItem("rubricBankStore", JSON.stringify(store));
     refreshBankList();
     alert("✅ Rúbrica guardada en banco local.");
+
+    // Archivado en carpeta (nuevo flujo)
+    (async () => {
+      const dirHandle = await window.getArchiveDirectory();
+      const filename = `${name.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0,10)}.json`;
+
+      if (dirHandle) {
+        try {
+          const fileHandle = await dirHandle.getFileHandle(filename, { create: true });
+          const writable = await fileHandle.createWritable();
+          await writable.write(JSON.stringify({ name, data }, null, 2));
+          await writable.close();
+          alert(`Guardado en carpeta seleccionada: ${filename}`);
+        } catch (err) {
+          console.error('Error guardando en carpeta:', err);
+          window.downloadAsJSON({ name, data }, filename); // Fallback
+          alert('Guardado como descarga (ver Descargas)');
+        }
+      } else {
+        window.downloadAsJSON({ name, data }, filename); // Fallback si no hay API o denegado
+        alert('Descargado a tu carpeta de Descargas');
+      }
+    })();
   }
 
   function loadFromBank() {

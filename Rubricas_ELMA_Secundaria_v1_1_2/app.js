@@ -1,14 +1,82 @@
 /* ============================================================
-   app.js — v1.4 Institucional (CORREGIDO)
+   app.js — v1.4 Institucional (CORREGIDO + ARCHIVADO EN CARPETA)
    - Campo “Número de Proceso Administrativo”
    - Importación de indicadores DESDE BOTÓN (ELMA)
+   - Archivado automático en carpeta local o descarga fallback
    ============================================================ */
 
 (function () {
-  console.log("🟦 app.js institucional v1.4 iniciado");
+  console.log("🟦 app.js institucional v1.4 iniciado (con archivado en carpeta)");
+
+  // ─────────────────────────────────────────
+  // UTILIDADES PARA ARCHIVADO EN CARPETA (File System Access API + fallback)
+  // ─────────────────────────────────────────
+  async function getArchiveDirectory() {
+    let dirHandle;
+    try {
+      // Intenta recuperar handle persistente de IndexedDB
+      const db = await new Promise((res, rej) => {
+        const req = indexedDB.open('ElmaSuiteDB', 1);
+        req.onupgradeneeded = e => e.target.result.createObjectStore('handles');
+        req.onsuccess = e => res(e.target.result);
+        req.onerror = rej;
+      });
+      const tx = db.transaction('handles', 'readonly');
+      const store = tx.objectStore('handles');
+      dirHandle = await new Promise((res, rej) => {
+        const getReq = store.get('archiveDirRubricas'); // key exclusiva para rúbricas
+        getReq.onsuccess = () => res(getReq.result);
+        getReq.onerror = rej;
+      });
+
+      if (dirHandle) {
+        // Verifica permiso persistente
+        if (await dirHandle.queryPermission({ mode: 'readwrite' }) !== 'granted') {
+          if (await dirHandle.requestPermission({ mode: 'readwrite' }) !== 'granted') {
+            dirHandle = null; // Denegado, fallback
+          }
+        }
+      }
+
+      if (!dirHandle) {
+        // Pide seleccionar carpeta (primera vez)
+        dirHandle = await window.showDirectoryPicker();
+        if (!dirHandle) throw new Error('Usuario canceló selección');
+
+        // Guarda handle en IndexedDB
+        const txWrite = db.transaction('handles', 'readwrite');
+        const storeWrite = txWrite.objectStore('handles');
+        await new Promise((res, rej) => {
+          const putReq = storeWrite.put(dirHandle, 'archiveDirRubricas');
+          putReq.onsuccess = res;
+          putReq.onerror = rej;
+        });
+      }
+      return dirHandle;
+    } catch (err) {
+      console.warn('File System Access no disponible o denegado:', err);
+      return null; // Fallback a descarga
+    }
+  }
+
+  function downloadAsJSON(data, filename) {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || 'rubrica.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // Exponer funciones para que rubric-engine.js las use
+  window.getArchiveDirectory = getArchiveDirectory;
+  window.downloadAsJSON = downloadAsJSON;
 
   /* ============================================================
-     🔵 IMPORTAR INDICADORES DESDE PLANEAMIENTOS (ELMA)
+     🔵 IMPORTAR INDICADORES DESDE PLANEAMIENTOS (ELMA) — sin cambios
      ============================================================ */
 
   document.addEventListener("DOMContentLoaded", () => {
@@ -58,7 +126,7 @@
   });
 
   /* ============================================================
-     🔵 CAMPOS ADMINISTRATIVOS (TU LÓGICA ORIGINAL)
+     🔵 CAMPOS ADMINISTRATIVOS (TU LÓGICA ORIGINAL) — sin cambios
      ============================================================ */
 
   const docenteInput    = document.querySelector("#adm-docente, #docente");
@@ -122,4 +190,4 @@
   if (guardarBtn) guardarBtn.addEventListener("click", guardarAdmin);
   if (limpiarBtn) limpiarBtn.addEventListener("click", limpiarAdmin);
 
-})();
+})();  // Fin del IIFE

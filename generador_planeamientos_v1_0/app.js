@@ -72,50 +72,59 @@
   // ─────────────────────────────────────────
   // Guardado (local + con nombre) / Carga
   // ─────────────────────────────────────────
-  function saveAll() {
-    const useNamed = confirm("¿Deseas guardar este planeamiento con un nombre (para manejar varios)?");
-    if (useNamed && Engine.savePlanWithName) {
-      const name = prompt("Nombre del planeamiento (ej: 'Química 10° - I Semestre'):");
-      if (name && name.trim()) {
-        const trimmed = name.trim();
-        const res = Engine.savePlanWithName(trimmed, currentMode);
-        if (res) {
-          setStatus(`Planeamiento guardado como: "${trimmed}".`);
-          try { fillPlanPicker(); } catch {}
-          return;
-        } else {
-          setStatus("No se pudo guardar con nombre. Se utilizará el guardado simple.", false);
-        }
+    async function saveAll() {
+  const useNamed = confirm("¿Deseas guardar este planeamiento con un nombre (para manejar varios)?");
+  let name = '';
+  if (useNamed && Engine.savePlanWithName) {
+    name = prompt("Nombre del planeamiento (ej: 'Química 10° - I Semestre'):");
+    if (name && name.trim()) {
+      name = name.trim();
+      const res = Engine.savePlanWithName(name, currentMode);
+      if (!res) {
+        setStatus("No se pudo guardar con nombre. Se utilizará el guardado simple.", false);
       }
-    }
-
-    const state = Engine.saveAll(currentMode);
-    const errs = [
-      ...Engine.validateAcademico(state.academico),
-      ...Engine.validateDidactico(state.didactico)
-    ];
-    if (errs.length) {
-      setStatus("Guardado con observaciones: " + errs.join(" | "), false);
     } else {
-      setStatus("Planeamiento guardado localmente.");
+      return; // Si no hay nombre, sale
     }
-    try { fillPlanPicker(); } catch {}
   }
 
-  function loadAll() {
-    const st = Engine.loadAll();
-    if (!st) {
-      setStatus("No hay datos guardados.", false);
-      return;
-    }
+  const state = Engine.saveAll(currentMode); // Guardado local (cache)
+  const errs = [
+    ...Engine.validateAcademico(state.academico),
+    ...Engine.validateDidactico(state.didactico)
+  ];
 
-    if (st.academico) Engine.writeAcademicoToDOM(st.academico);
-    if (st.didactico) Engine.writeDidacticoToDOM(st.didactico);
-    showWelcome();
-    currentMode = st.mode === "academico" ? "academico" : "didactico";
-    setStatus("Planeamiento cargado. Selecciona Académico o Didáctico para continuar.");
+  let statusMsg = "Planeamiento guardado localmente.";
+  if (errs.length) {
+    statusMsg = "Guardado con observaciones: " + errs.join(" | ");
+    setStatus(statusMsg, false);
+  } else {
+    setStatus(statusMsg);
   }
 
+  try { fillPlanPicker(); } catch {}
+
+  // Archivado en carpeta (nuevo flujo)
+  const dirHandle = await getArchiveDirectory();
+  const filename = name ? `${name.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0,10)}.json` : `planeamiento_${new Date().toISOString().slice(0,10)}.json`;
+
+  if (dirHandle) {
+    try {
+      const fileHandle = await dirHandle.getFileHandle(filename, { create: true });
+      const writable = await fileHandle.createWritable();
+      await writable.write(JSON.stringify(state, null, 2));
+      await writable.close();
+      setStatus(`${statusMsg} | Guardado en carpeta seleccionada: ${filename}`, !errs.length);
+    } catch (err) {
+      console.error('Error guardando en carpeta:', err);
+      downloadAsJSON(state, filename); // Fallback
+      setStatus(`${statusMsg} | Guardado como descarga (ver Descargas)`, !errs.length);
+    }
+  } else {
+    downloadAsJSON(state, filename); // Fallback si no hay API o denegado
+    setStatus(`${statusMsg} | Descargado a tu carpeta de Descargas`, !errs.length);
+  }
+}
   // ─────────────────────────────────────────
   // Picker del header
   // ─────────────────────────────────────────
@@ -262,6 +271,17 @@
     if (btnOpenPlan) btnOpenPlan.onclick = openSelectedPlan;
     if (btnRefreshPlans) btnRefreshPlans.onclick = fillPlanPicker;
 
+    // AQUÍ: Agregá los listeners de las tablas
+    const btnAddAcad = document.getElementById("acad-add-row");
+    const btnClearAcad = document.getElementById("acad-clear-rows");
+    if (btnAddAcad) btnAddAcad.onclick = () => Engine.addAcadRow();
+    if (btnClearAcad) btnClearAcad.onclick = Engine.clearAcadRows;
+
+    const btnAddDid = document.getElementById("did-add-row");
+    const btnClearDid = document.getElementById("did-clear-rows");
+    if (btnAddDid) btnAddDid.onclick = () => Engine.addDidRow();
+    if (btnClearDid) btnClearDid.onclick = Engine.clearDidRows;
+
     // estado inicial
     const st = Engine.loadAll();
     if (st && (st.academico || st.didactico)) {
@@ -280,8 +300,7 @@
       setStatus("Selecciona el tipo de planeamiento que deseas crear.");
     }
 
-    fillPlanPicker();
-  }
+    fillPlanPicker();  }
 
   document.addEventListener("DOMContentLoaded", init);
 })();
