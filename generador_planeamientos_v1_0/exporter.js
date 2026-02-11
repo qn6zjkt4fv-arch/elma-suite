@@ -1,5 +1,6 @@
 // exporter.js — centrado horizontal y vertical en celdas + encabezado institucional + merge jerárquico + párrafos
 // Solo afecta los productos finales (preview / Word / PDF). No toca la interfaz de edición.
+// Modificado: Header administrativo solo en primera página (con fuerza corte y .first-page para blindar)
 
 (function (global) {
 
@@ -40,7 +41,7 @@
     return parts.map(p => `<p>${esc(p)}</p>`).join("");
   }
 
-  /* ========== Estilos base y encabezado ========== */
+  /* ========== Estilos base y encabezado (modificado para compatibilidad print con fuerza corte y .first-page) ========== */
 
   function baseHead() {
     return (
@@ -48,171 +49,100 @@
       '<meta charset="UTF-8"><title>Planeamiento</title>' +
       '<style>' +
       'body{font-family:Arial,Helvetica,sans-serif;font-size:12pt;line-height:1.3;margin:30px;}' +
-      'h1{font-size:16pt;margin:8px 0 4px;}' +
-      'h2{font-size:14pt;margin:16px 0 6px;}' +
-      'table{width:100%;border-collapse:collapse;margin-top:6px;}' +
-      'th,td{border:1px solid #999;padding:6px;vertical-align:top;}' +
-      'thead th{background:#f2f2f2;}' +
-      /* 👉 Centrado horizontal y vertical en TODAS las celdas y encabezados */
-      'table th, table td { text-align:center; vertical-align:middle; }' +
-      /* Encabezado centrado */
-      '.logo-header{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;margin-bottom:8px;}' +
-      '.logo-header img{height:52px;margin-bottom:4px;}' +
-      '.logo-text{font-size:10pt;line-height:1.25;}' +
-      '.logo-text strong{display:block;}' +
-      /* Tabla administrativa en azul con texto blanco */
-      '.table-admin th,.table-admin td{background:#0e7be7;color:#ffffff;border-color:#0b5fb5;}' +
-      '.table-admin th{font-weight:bold;}' +
-      /* Párrafos dentro de celdas (heredan centrado y vertical-middle) */
-      'td p{margin:0 0 6px 0;}' +
-      '</style></head><body>'
+      'table{border-collapse:collapse;width:100%;}' +
+      'th,td{border:1px solid #000;padding:8px;vertical-align:middle;text-align:center;}' +
+      'th{background:#f2f2f2;}' +
+      'p{margin:4px 0;}' +
+      '.admin{margin-bottom:20px;text-align:center;}' +
+      '.matriz th:first-child,.matriz td:first-child{text-align:left;}' + // Ajustes adicionales si necesario
+      // Nuevo CSS para print: Admin + título en p1, fuerza corte después para p2+
+      '@media print {' +
+      '  @page { size: letter; margin: 2cm; }' +
+      '  .first-page { page-break-after: always; }' + // Fuerza corte después de admin + título
+      '  table { page-break-inside: auto; }' +
+      '  tr { page-break-inside: avoid; page-break-after: auto; }' +
+      '  thead { display: table-header-group; }' + // Repite solo columnas en p2+
+      '  tfoot { display: table-footer-group; }' +
+      '}' +
+      '</style>' +
+      '</head><body>'
     );
   }
 
-  function headerWithLogo(titulo) {
-    return (
-      '<div class="logo-header">' +
-        '<img src="logo-elma.png" alt="Logo FMA">' +
-        '<div class="logo-text">' +
-          '<div>Ministerio de Educación Pública</div>' +
-          '<strong>Escuela Liceo María Auxiliadora de San José</strong>' +
-          '<div>Instituto de las Hijas de María Auxiliadora</div>' +
-        '</div>' +
+  /* ========== Generadores de HTML ========== */
+
+  function htmlAdmin(data, mode) {
+    return `<div class="admin">` +
+      `<img src="logo-elma.png" alt="Logo ELMA" style="height:50px;">` +
+      `<h2>Instituto Figlie di Maria Ausiliatrice</h2>` +
+      `<p>Escuela Liceo María Auxiliadora - San José - Costa Rica</p>` +
+      `<p>Docente: ${esc(data.docente)}</p>` +
+      `<p>Asignatura: ${esc(data.asignatura)}</p>` +
+      (mode === "didactico" ? `<p>Tema: ${esc(data.tema)}</p>` : '') +
+      `<p>Nivel: ${esc(data.nivel)}</p>` +
+      `<p>Ciclo: ${data.ciclo}</p>` +
+      (mode === "academico" ? `<p>Periodicidad: ${esc(data.periodicidad)}</p>` : 
+      `<p>Periodo: del ${esc(data.periodo_del)} al ${esc(data.periodo_al)} | Lecciones: ${esc(data.lecciones)}</p>`) +
+      `</div>`;
+  }
+
+  function htmlAcademico(acad) {
+    let html = '<div class="first-page">' + // Wrap admin + h1 para corte after
+      htmlAdmin(acad, "academico") +
+      '<h1>Planeamiento Académico</h1>' +
       '</div>' +
-      '<h1>' + esc(titulo) + '</h1>'
-    );
-  }
+      '<table class="matriz">' +
+      '<thead><tr>' +
+      '<th>Unidad</th><th>Objetivo general</th><th>Objetivo específico</th><th>Contenidos</th><th>Estrategias de mediación</th><th>Tiempo</th>' +
+      '</tr></thead><tbody>';
 
-  /* ========== Académico con merge jerárquico ========== */
+    acad.matriz.forEach(row => {
+      html += '<tr>' +
+        `<td>${esc(row.unidad)}</td>` +
+        `<td>${toParagraphs(row.obj_general, "3p")}</td>` +
+        `<td>${toParagraphs(row.obj_especifico, "inf")}</td>` +
+        `<td>${toParagraphs(row.contenidos, "3p")}</td>` +
+        `<td>${toParagraphs(row.estrategias, "3p")}</td>` +
+        `<td>${esc(row.tiempo)}</td>` +
+        '</tr>';
+    });
 
-  function buildAcadRowsMerged(matriz) {
-    if (!Array.isArray(matriz) || matriz.length === 0) return "";
-
-    let html = "";
-    let i = 0;
-
-    while (i < matriz.length) {
-      // Grupo por UNIDAD
-      const unidadNorm = norm(matriz[i].unidad);
-      const startUnidad = i;
-      let j = i + 1;
-      while (j < matriz.length && norm(matriz[j].unidad) === unidadNorm) j++;
-      const endUnidad = j;
-      const spanUnidad = endUnidad - startUnidad;
-
-      // Dentro: subgrupos por OBJ. GENERAL
-      let u = startUnidad;
-      let printedUnidad = false;
-
-      while (u < endUnidad) {
-        const objNorm = norm(matriz[u].obj_gen);
-        const startObj = u;
-        let v = u + 1;
-        while (v < endUnidad && norm(matriz[v].obj_gen) === objNorm) v++;
-        const endObj = v;
-        const spanObj = endObj - startObj;
-
-        for (let k = startObj; k < endObj; k++) {
-          const r = matriz[k];
-          html += "<tr>";
-
-          if (!printedUnidad) {
-            html += '<td rowspan="' + spanUnidad + '">' + esc(matriz[startUnidad].unidad) + '</td>';
-            printedUnidad = true;
-          }
-          if (k === startObj) {
-            html += '<td rowspan="' + spanObj + '">' + esc(matriz[startObj].obj_gen) + '</td>';
-          }
-
-          html += '<td>' + toParagraphs(r.obj_esp, "inf") + '</td>';
-          html += '<td>' + esc(r.contenidos) + '</td>';
-          html += '<td>' + esc(r.estrategias) + '</td>';
-          html += '<td>' + esc(r.tiempo) + '</td>';
-
-          html += "</tr>";
-        }
-
-        u = endObj;
-      }
-
-      i = endUnidad;
-    }
-
+    html += '</tbody></table>';
     return html;
   }
 
-  function htmlAcademico(ac) {
-    const filas = buildAcadRowsMerged(ac.matriz || []);
-    return (
-      baseHead() +
-      headerWithLogo("Planeamiento Académico") +
-      '<table class="table-admin">' +
-        '<tr><th>Docente</th><td>' + esc(ac.docente) + '</td>' +
-            '<th>Asignatura</th><td>' + esc(ac.asignatura) + '</td></tr>' +
-        '<tr><th>Nivel</th><td>' + esc(ac.nivel) + '</td>' +
-            '<th>Ciclo lectivo</th><td>' + esc(ac.ciclo) + '</td></tr>' +
-        '<tr><th>Periodicidad</th><td colspan="3">' + esc(ac.periodicidad) + '</td></tr>' +
-      '</table>' +
-      '<h2>Unidades</h2>' +
-      '<table>' +
-        '<thead><tr>' +
-          '<th>Unidad</th>' +
-          '<th>Objetivo general de la unidad</th>' +
-          '<th>Objetivo específico</th>' +
-          '<th>Contenidos</th>' +
-          '<th>Estrategias de mediación</th>' +
-          '<th>Tiempo</th>' +
-        '</tr></thead>' +
-        '<tbody>' + filas + '</tbody>' +
-      '</table>' +
-      '</body></html>'
-    );
+  function htmlDidactico(did) {
+    let html = '<div class="first-page">' + // Wrap admin + h1 para corte after
+      htmlAdmin(did, "didactico") +
+      '<h1>Planeamiento Didáctico</h1>' +
+      '</div>' +
+      '<table class="matriz">' +
+      '<thead><tr>' +
+      '<th>Aprendizaje esperado</th><th>Indicadores de logro</th><th>Estrategias de mediación</th><th>Criterios de evaluación</th><th>Tiempo</th>' +
+      '</tr></thead><tbody>';
+
+    did.matriz.forEach(row => {
+      html += '<tr>' +
+        `<td>${toParagraphs(row.aprendizaje, "3p")}</td>` +
+        `<td>${toParagraphs(row.indicadores, "3p")}</td>` +
+        `<td>${toParagraphs(row.estrategias, "3p")}</td>` +
+        `<td>${toParagraphs(row.criterios, "3p")}</td>` +
+        `<td>${esc(row.tiempo)}</td>` +
+        '</tr>';
+    });
+
+    html += '</tbody></table>';
+    return html;
   }
-
-  /* ========== Didáctico con párrafos en Indicadores ========== */
-
-  function htmlDidactico(d) {
-    const filas = (d.matriz || []).map(r => (
-      "<tr>" +
-        "<td>" + esc(r.ae) + "</td>" +
-        "<td>" + esc(r.estrategias) + "</td>" +
-        "<td>" + toParagraphs(r.indicadores, "3p") + "</td>" +
-      "</tr>"
-    )).join("");
-
-    return (
-      baseHead() +
-      headerWithLogo("Planeamiento Didáctico") +
-      '<table class="table-admin">' +
-        '<tr><th>Docente</th><td>' + esc(d.docente) + '</td>' +
-            '<th>Asignatura</th><td>' + esc(d.asignatura) + '</td></tr>' +
-        '<tr><th>Tema</th><td>' + esc(d.tema) + '</td>' +
-            '<th>Nivel</th><td>' + esc(d.nivel) + '</td></tr>' +
-        '<tr><th>Ciclo lectivo</th><td>' + esc(d.ciclo) + '</td>' +
-            '<th>Período</th><td>' + esc(d.periodo_del) + ' a ' + esc(d.periodo_al) + '</td></tr>' +
-        '<tr><th>Cantidad de lecciones</th><td colspan="3">' + esc(d.lecciones) + '</td></tr>' +
-      '</table>' +
-      '<h2>Matriz didáctica</h2>' +
-      '<table>' +
-        '<thead><tr>' +
-          '<th>Aprendizajes esperados</th>' +
-          '<th>Estrategias de mediación</th>' +
-          '<th>Indicadores / criterios de aprendizaje</th>' +
-        '</tr></thead>' +
-        '<tbody>' + filas + '</tbody>' +
-      '</table>' +
-      '</body></html>'
-    );
-  }
-
-  /* ========== Construcción y acciones ========== */
 
   function build(mode) {
-    const Engine = global.PlannerEngine;
-    if (!Engine) return "";
-    const ac = Engine.readAcademicoFromDOM();
-    const did = Engine.readDidacticoFromDOM();
-    return mode === "academico" ? htmlAcademico(ac) : htmlDidactico(did);
+    const state = Engine.loadAll();
+    if (!state || !state[mode]) return null;
+
+    const data = state[mode];
+    const content = (mode === "academico" ? htmlAcademico(data) : htmlDidactico(data));
+
+    return baseHead() + content + '</body></html>';
   }
 
   function preview(mode) {
@@ -250,6 +180,6 @@
 
   window.PlaneamientoExporter = { preview, exportWord, exportPrint };
 
-  console.log("Exporter: centrado horizontal y vertical activo, merge jerárquico y párrafos.");
+  console.log("Exporter: centrado horizontal y vertical activo, merge jerárquico y párrafos. Header solo en primera página (con .first-page blindado).");
 
 })(window);

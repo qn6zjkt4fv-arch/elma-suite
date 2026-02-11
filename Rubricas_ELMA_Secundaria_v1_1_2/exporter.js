@@ -1,8 +1,8 @@
 /* ============================================================
-   exporter.js — v0.5 Institucional (sin duplicar encabezado)
+   exporter.js — v0.5 Institucional (sin duplicar encabezado + header solo en primera página con .first-page blindado)
    ============================================================ */
 (function () {
-  console.log("🟦 exporter.js v0.5");
+  console.log("🟦 exporter.js v0.5 (header solo en primera página con .first-page blindado)");
 
   const exportPDFBtn = document.getElementById("export-pdf") || document.getElementById("exportPDF");
   const exportDOCBtn = document.getElementById("export-word") || document.getElementById("export-doc");
@@ -28,6 +28,17 @@
             th, td { border: 1px solid #444; padding: 6px; text-align: left; vertical-align: top; }
             th { background-color: #f0f0f0; }
             h2, h3 { margin: 0; }
+            /* Nuevo: Header administrativo solo en primera página (con fuerza corte y .first-page) */
+            @media print {
+              @page { size: letter; margin: 2cm; }
+              .first-page { page-break-after: always; } /* Fuerza corte después de admin + título */
+              .admin { page-break-after: avoid; } /* Admin pegado al título */
+              h2 { page-break-after: avoid; } /* Título pegado a admin */
+              table { page-break-inside: auto; }
+              tr { page-break-inside: avoid; page-break-after: auto; }
+              thead { display: table-header-group; } /* Repite solo columnas en p2+ */
+              tfoot { display: table-footer-group; }
+            }
           </style>
         </head>
         <body>${bodyHTML}</body>
