@@ -1,5 +1,5 @@
 // app.js — bienvenida + modos + acciones principales + selector de planes guardados (header)
-(function () {
+document.addEventListener("DOMContentLoaded", function () {
   const Engine = window.PlannerEngine;
 
   let currentMode = "didactico"; // "didactico" | "academico"
@@ -44,298 +44,248 @@
       Engine.syncAdminFromAcademicoToDidactico();
     }
 
-    setStatus(
-      isDid
-        ? "Modo: Planeamiento didáctico."
-        : "Modo: Planeamiento académico."
-    );
+    attachTableListeners(); // Adjunta listeners cada vez que cambias modo
   }
 
-  function startDidactico() { switchMode("didactico"); }
-  function startAcademico() { switchMode("academico"); }
-
-  function newPlan() {
-    const st = Engine.defaultState();
-
-    Engine.writeAcademicoToDOM(st.academico);
-    Engine.clearAcadRows();
-    Engine.addAcadRow();
-
-    Engine.writeDidacticoToDOM(st.didactico);
-    Engine.clearDidRows();
-    Engine.addDidRow();
-
-// Mueve los listeners AQUÍ, después de renderizar las tablas
-const attachTableListeners = () => {
-  const btnAddAcad = document.getElementById("acad-add-row");
-  const btnClearAcad = document.getElementById("acad-clear-rows");
-  if (btnAddAcad) {
-    btnAddAcad.onclick = () => Engine.addAcadRow();
-    console.log("Listener adjuntado a acad-add-row"); // Para debug
-  }
-  if (btnClearAcad) {
-    btnClearAcad.onclick = Engine.clearAcadRows;
-    console.log("Listener adjuntado a acad-clear-rows");
-  }
-
-  const btnAddDid = document.getElementById("did-add-row");
-  const btnClearDid = document.getElementById("did-clear-rows");
-  if (btnAddDid) {
-    btnAddDid.onclick = () => Engine.addDidRow();
-    console.log("Listener adjuntado a did-add-row");
-  }
-  if (btnClearDid) {
-    btnClearDid.onclick = Engine.clearDidRows;
-    console.log("Listener adjuntado a did-clear-rows");
-  }
-};
-
-// Llama después del render inicial
-attachTableListeners();
-
-// Y si cambias de modo, vuelve a adjuntar (por si las secciones se ocultan/muestran)
-const originalSwitchMode = switchMode;
-switchMode = (mode) => {
-  originalSwitchMode(mode);
-  setTimeout(attachTableListeners, 100); // Pequeño delay para que el DOM se actualice
-};
-
-    showWelcome();
-    setStatus("Nuevo planeamiento iniciado. Selecciona el tipo para comenzar.");
-  }
-
-  // ─────────────────────────────────────────
-  // Guardado (local + con nombre) / Carga
-  // ─────────────────────────────────────────
-    async function saveAll() {
-  const useNamed = confirm("¿Deseas guardar este planeamiento con un nombre (para manejar varios)?");
-  let name = '';
-  if (useNamed && Engine.savePlanWithName) {
-    name = prompt("Nombre del planeamiento (ej: 'Química 10° - I Semestre'):");
-    if (name && name.trim()) {
-      name = name.trim();
-      const res = Engine.savePlanWithName(name, currentMode);
-      if (!res) {
-        setStatus("No se pudo guardar con nombre. Se utilizará el guardado simple.", false);
-      }
-    } else {
-      return; // Si no hay nombre, sale
-    }
-  }
-
-  const state = Engine.saveAll(currentMode); // Guardado local (cache)
-  const errs = [
-    ...Engine.validateAcademico(state.academico),
-    ...Engine.validateDidactico(state.didactico)
-  ];
-
-  let statusMsg = "Planeamiento guardado localmente.";
-  if (errs.length) {
-    statusMsg = "Guardado con observaciones: " + errs.join(" | ");
-    setStatus(statusMsg, false);
-  } else {
-    setStatus(statusMsg);
-  }
-
-  try { fillPlanPicker(); } catch {}
-
-  // Archivado en carpeta (nuevo flujo)
-  const dirHandle = await getArchiveDirectory();
-  const filename = name ? `${name.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0,10)}.json` : `planeamiento_${new Date().toISOString().slice(0,10)}.json`;
-
-  if (dirHandle) {
-    try {
-      const fileHandle = await dirHandle.getFileHandle(filename, { create: true });
-      const writable = await fileHandle.createWritable();
-      await writable.write(JSON.stringify(state, null, 2));
-      await writable.close();
-      setStatus(`${statusMsg} | Guardado en carpeta seleccionada: ${filename}`, !errs.length);
-    } catch (err) {
-      console.error('Error guardando en carpeta:', err);
-      downloadAsJSON(state, filename); // Fallback
-      setStatus(`${statusMsg} | Guardado como descarga (ver Descargas)`, !errs.length);
-    }
-  } else {
-    downloadAsJSON(state, filename); // Fallback si no hay API o denegado
-    setStatus(`${statusMsg} | Descargado a tu carpeta de Descargas`, !errs.length);
-  }
-}
-  // ─────────────────────────────────────────
-  // Picker del header
-  // ─────────────────────────────────────────
-  function fillPlanPicker() {
-    const sel = document.getElementById("plan-picker");
-    if (!sel || !Engine || !Engine.getPlanNames) return;
-    const names = Engine.getPlanNames() || [];
-    const selected = sel.value;
-
-    sel.innerHTML = "";
-    const opt0 = document.createElement("option");
-    opt0.value = "";
-    opt0.textContent = "— Selecciona un planeamiento guardado —";
-    sel.appendChild(opt0);
-
-    names.forEach(n => {
-      const opt = document.createElement("option");
-      opt.value = n;
-      opt.textContent = n;
-      sel.appendChild(opt);
-    });
-
-    sel.value = (selected && names.includes(selected)) ? selected : "";
-  }
-
-  function openSelectedPlan() {
-    const sel = document.getElementById("plan-picker");
-    if (!sel) return;
-    const name = sel.value && sel.value.trim();
-    if (!name) {
-      alert("Selecciona un planeamiento de la lista.");
-      return;
-    }
-    const plan = Engine.getPlanByName ? Engine.getPlanByName(name) : null;
-    if (!plan) {
-      alert("No se encontró el planeamiento seleccionado.");
-      fillPlanPicker();
-      return;
-    }
-
-    if (plan.academico) Engine.writeAcademicoToDOM(plan.academico);
-    if (plan.didactico) Engine.writeDidacticoToDOM(plan.didactico);
-    showWelcome();
-    currentMode = (plan.mode === "academico" || plan.mode === "didactico") ? plan.mode : currentMode;
-    setStatus(`Planeamiento "${name}" cargado. Selecciona el modo para continuar.`);
-  }
-
-  // ─────────────────────────────────────────
-  // Exportador
-  // ─────────────────────────────────────────
-  function getExporter() {
-    const exp = window.PlaneamientoExporter;
-    if (!exp) {
-      alert("No se encontró el módulo de exportación. Asegúrate de que 'exporter.js' se cargue antes de 'app.js'.");
-      console.error("PlaneamientoExporter no disponible en window.");
-      return null;
-    }
-    return exp;
-  }
-
-  function handlePreview() {
-    const exp = getExporter();
-    if (exp && exp.preview) exp.preview(currentMode);
-  }
-
-  function handleExportWord() {
-    const exp = getExporter();
-    if (exp && exp.exportWord) exp.exportWord(currentMode);
-  }
-
-  function handlePrint() {
-    const exp = getExporter();
-    if (exp && exp.exportPrint) exp.exportPrint(currentMode);
-  }
-
-  // ─────────────────────────────────────────
-  // INIT
-  // ─────────────────────────────────────────
-  function init() {
-    // bienvenida
-    const btnStartDid = document.getElementById("start-did");
-    const btnStartAcad = document.getElementById("start-acad");
-    if (btnStartDid) btnStartDid.onclick = startDidactico;
-    if (btnStartAcad) btnStartAcad.onclick = startAcademico;
-
-    // switch modo
-    document.querySelectorAll(".mode-btn").forEach(b => {
-      b.addEventListener("click", () => switchMode(b.dataset.mode));
-    });
-
-    // header actions
-    const btnNew = document.getElementById("btn-new");
-    const btnSave = document.getElementById("btn-save");
-    const btnLoad = document.getElementById("btn-load");
-    const btnPrev = document.getElementById("btn-preview");
-    const btnWord = document.getElementById("btn-export-word");
-    const btnPrint = document.getElementById("btn-print");
-
-    if (btnNew) btnNew.onclick = newPlan;
-    if (btnSave) btnSave.onclick = saveAll;
-    if (btnLoad) btnLoad.onclick = loadAll;
-    if (btnPrev) btnPrev.onclick = handlePreview;
-    if (btnWord) btnWord.onclick = handleExportWord;
-    if (btnPrint) btnPrint.onclick = handlePrint;
-
-    // ─────────────────────────────────────────
-    // EXPORTAR INDICADORES A RÚBRICAS (FIX)
-    // ─────────────────────────────────────────
-    const btnExportIndicadores = document.getElementById("did-export-indicadores");
-    if (btnExportIndicadores) {
-      btnExportIndicadores.addEventListener("click", () => {
-        try {
-         const indicadores = Array.from(
- 	   document.querySelectorAll("#didactico-section textarea")
-	   )
-  	.map(el => el.value.trim())
-	.filter(txt => txt.length > 0);
-
-
-          if (indicadores.length === 0) {
-            alert("No hay indicadores para exportar.");
-            return;
-          }
-
-          localStorage.setItem(
-            "ELMA_EXPORT_INDICADORES",
-            JSON.stringify(indicadores)
-          );
-
-          window.location.href =
-            "../Rubricas_ELMA_Secundaria_v1_1_2/index.html";
-
-        } catch (err) {
-          console.error("Error exportando indicadores:", err);
-          alert("Ocurrió un error al exportar los indicadores.");
-        }
-      });
-    }
-
-    // picker
-    const planPicker = document.getElementById("plan-picker");
-    const btnOpenPlan = document.getElementById("btn-open-plan");
-    const btnRefreshPlans = document.getElementById("btn-refresh-plans");
-    if (btnOpenPlan) btnOpenPlan.onclick = openSelectedPlan;
-    if (btnRefreshPlans) btnRefreshPlans.onclick = fillPlanPicker;
-
-    // AQUÍ: Agregá los listeners de las tablas
+  // Función para adjuntar listeners a las tablas (con logs para debug)
+  function attachTableListeners() {
     const btnAddAcad = document.getElementById("acad-add-row");
     const btnClearAcad = document.getElementById("acad-clear-rows");
-    if (btnAddAcad) btnAddAcad.onclick = () => Engine.addAcadRow();
-    if (btnClearAcad) btnClearAcad.onclick = Engine.clearAcadRows;
+    if (btnAddAcad) {
+      btnAddAcad.onclick = () => Engine.addAcadRow();
+      console.log("Listener adjuntado a acad-add-row");
+    } else {
+      console.warn("btnAddAcad no encontrado – sección académica oculta?");
+    }
+    if (btnClearAcad) {
+      btnClearAcad.onclick = Engine.clearAcadRows;
+      console.log("Listener adjuntado a acad-clear-rows");
+    }
 
     const btnAddDid = document.getElementById("did-add-row");
     const btnClearDid = document.getElementById("did-clear-rows");
-    if (btnAddDid) btnAddDid.onclick = () => Engine.addDidRow();
-    if (btnClearDid) btnClearDid.onclick = Engine.clearDidRows;
-
-    // estado inicial
-    const st = Engine.loadAll();
-    if (st && (st.academico || st.didactico)) {
-      if (st.academico) Engine.writeAcademicoToDOM(st.academico);
-      if (st.didactico) Engine.writeDidacticoToDOM(st.didactico);
-      showWelcome();
-      currentMode = st.mode === "academico" ? "academico" : "didactico";
-      setStatus("Datos guardados detectados. Selecciona el modo para continuar.");
+    if (btnAddDid) {
+      btnAddDid.onclick = () => Engine.addDidRow();
+      console.log("Listener adjuntado a did-add-row");
     } else {
-      const st0 = Engine.defaultState();
-      Engine.writeAcademicoToDOM(st0.academico);
-      Engine.addAcadRow();
-      Engine.writeDidacticoToDOM(st0.didactico);
-      Engine.addDidRow();
-      showWelcome();
-      setStatus("Selecciona el tipo de planeamiento que deseas crear.");
+      console.warn("btnAddDid no encontrado – sección didáctica oculta?");
     }
+    if (btnClearDid) {
+      btnClearDid.onclick = Engine.clearDidRows;
+      console.log("Listener adjuntado a did-clear-rows");
+    }
+  }
 
-    fillPlanPicker();  }
+  // Guardado (local + con nombre) / Carga
+  // ─────────────────────────────────────────
+  function saveAll() {
+    const useNamed = confirm("¿Deseas guardar este planeamiento con un nombre (para manejar varios)?");
+    if (useNamed && Engine.savePlanWithName) {
+      const name = prompt("Nombre del planeamiento (ej: 'Química 10° - I Semestre'):");
+      if (name && name.trim()) {
+        const trimmed = name.trim();
+        const res = Engine.savePlanWithName(trimmed, currentMode);
+        if (res) {
+          setStatus(`Planeamiento guardado como: "${trimmed}".`);
+          try { fillPlanPicker(); } catch {}
+          return;
+        } else {
+          setStatus("No se pudo guardar con nombre. Se utilizará el guardado simple.", false);
+        }
+      }
+    }
+    const state = Engine.saveAll(currentMode);
+    const errs = [
+      ...Engine.validateAcademico(state.academico),
+      ...Engine.validateDidactico(state.didactico)
+    ];
+    if (errs.length) {
+      setStatus("Guardado con observaciones: " + errs.join(" | "), false);
+    } else {
+      setStatus("Planeamiento guardado localmente.");
+    }
+    try { fillPlanPicker(); } catch {}
+  }
 
-  document.addEventListener("DOMContentLoaded", init);
-})();
+  function loadAll() {
+    const st = Engine.loadAll();
+    if (!st) {
+      setStatus("No hay datos guardados.", false);
+      return;
+    }
+    if (st.academico) Engine.writeAcademicoToDOM(st.academico);
+    if (st.didactico) Engine.writeDidacticoToDOM(st.didactico);
+    showWelcome();
+    currentMode = st.mode === "academico" ? "academico" : "didactico";
+    setStatus("Planeamiento cargado. Selecciona Académico o Didáctico para continuar.");
+  }
+
+  // Botones de modo (fix: usar .mode-btn en vez de IDs)
+  document.querySelectorAll(".mode-btn").forEach(btn => {
+    btn.onclick = () => switchMode(btn.dataset.mode);
+  });
+
+  // Nuevo
+  const btnNew = document.getElementById("btn-new");
+  if (btnNew) {
+    btnNew.onclick = () => {
+      console.log("Clic en nuevo llamado");
+      if (confirm("¿Limpiar todo y comenzar un nuevo planeamiento?")) {
+        localStorage.removeItem("ELMA_PLANEAMIENTO");
+        location.reload();
+      }
+    };
+    console.log("Listener adjuntado a btn-new");
+  }
+
+  // Guardar
+  const btnSave = document.getElementById("btn-save");
+  if (btnSave) {
+    btnSave.onclick = saveAll;
+    console.log("Listener adjuntado a btn-save");
+  }
+
+  // Cargar
+  const btnLoad = document.getElementById("btn-load");
+  if (btnLoad) {
+    btnLoad.onclick = loadAll;
+    console.log("Listener adjuntado a btn-load");
+  }
+
+  // Previsualizar (con chequeo y log)
+  const btnPreview = document.getElementById("btn-preview");
+  if (btnPreview) {
+    btnPreview.onclick = () => {
+      console.log("Clic en previsualizar llamado");
+      PlaneamientoExporter.preview(currentMode);
+    };
+    console.log("Listener adjuntado a btn-preview");
+  }
+
+  // Exportar Word (con chequeo y log)
+  const btnExportWord = document.getElementById("btn-export-word");
+  if (btnExportWord) {
+    btnExportWord.onclick = () => {
+      console.log("Clic en exportar Word llamado");
+      PlaneamientoExporter.exportWord(currentMode);
+    };
+    console.log("Listener adjuntado a btn-export-word");
+  }
+
+  // Imprimir / PDF (con chequeo y log)
+  const btnPrint = document.getElementById("btn-print");
+  if (btnPrint) {
+    btnPrint.onclick = () => {
+      console.log("Clic en imprimir/PDF llamado");
+      PlaneamientoExporter.exportPrint(currentMode);
+    };
+    console.log("Listener adjuntado a btn-print");
+  }
+
+  // Exportar JSON (con log)
+  const btnExportJson = document.getElementById("btn-export-json");
+  if (btnExportJson) {
+    btnExportJson.onclick = () => {
+      console.log("Clic en exportar JSON llamado");
+      const state = Engine.saveAll(currentMode);
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `planeamiento_${currentMode}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+    console.log("Listener adjuntado a btn-export-json");
+  }
+
+  // Importar JSON (con log)
+  const btnImportJson = document.getElementById("btn-import-json");
+  const inputJson = document.createElement("input");
+  inputJson.type = "file";
+  inputJson.accept = ".json";
+  inputJson.style.display = "none";
+  document.body.appendChild(inputJson);
+  if (btnImportJson) {
+    btnImportJson.onclick = () => {
+      console.log("Clic en import JSON llamado");
+      inputJson.click();
+    };
+    console.log("Listener adjuntado a btn-import-json");
+  }
+  inputJson.onchange = () => {
+    const file = inputJson.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const state = JSON.parse(e.target.result);
+        Engine.writeAcademicoToDOM(state.academico);
+        Engine.writeDidacticoToDOM(state.didactico);
+        currentMode = state.mode;
+        switchMode(currentMode);
+        setStatus("Planeamiento importado desde JSON.");
+      } catch (err) {
+        setStatus("Error importando JSON: " + err.message, false);
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  // Exportar indicadores (didáctico) – fix selector con name
+  const btnExportIndicadores = document.getElementById("did-export-indicadores");
+  if (btnExportIndicadores) {
+    btnExportIndicadores.onclick = () => {
+      console.log("Clic en export indicadores llamado");
+      try {
+        const indicadores = [...didSection().querySelectorAll('textarea[name="did-indicadores"]')].map(ta => ta.value.trim()).filter(Boolean);
+        if (!indicadores.length) {
+          alert("No hay indicadores para exportar.");
+          return;
+        }
+
+        localStorage.setItem(
+          "ELMA_EXPORT_INDICADORES",
+          JSON.stringify(indicadores)
+        );
+
+        window.location.href = "../Rubricas_ELMA_Secundaria_v1_1_2/index.html";
+
+      } catch (err) {
+        console.error("Error exportando indicadores:", err);
+        alert("Ocurrió un error al exportar los indicadores.");
+      }
+    };
+    console.log("Listener adjuntado a did-export-indicadores");
+  };
+
+  // picker – comentado temporalmente porque funciones no definidas (descomenta cuando las agregues)
+  // const planPicker = document.getElementById("plan-picker");
+  // const btnOpenPlan = document.getElementById("btn-open-plan");
+  // if (btnOpenPlan) btnOpenPlan.onclick = openSelectedPlan;
+  // const btnRefreshPlans = document.getElementById("btn-refresh-plans");
+  // if (btnRefreshPlans) btnRefreshPlans.onclick = fillPlanPicker;
+
+  // estado inicial
+  const st = Engine.loadAll();
+  if (st && (st.academico || st.didactico)) {
+    if (st.academico) Engine.writeAcademicoToDOM(st.academico);
+    if (st.didactico) Engine.writeDidacticoToDOM(st.didactico);
+    showWelcome();
+    currentMode = st.mode === "academico" ? "academico" : "didactico";
+    setStatus("Datos guardados detectados. Selecciona el modo para continuar.");
+  } else {
+    const st0 = Engine.defaultState();
+    Engine.writeAcademicoToDOM(st0.academico);
+    Engine.addAcadRow();
+    Engine.writeDidacticoToDOM(st0.didactico);
+    Engine.addDidRow();
+    showWelcome();
+    setStatus("Selecciona el tipo de planeamiento que deseas crear.");
+  }
+
+  // fillPlanPicker(); // comentado temporalmente
+
+  // Llama a attachTableListeners al final, después de que todo se renderice
+  attachTableListeners();
+});
