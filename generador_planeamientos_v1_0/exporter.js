@@ -1,8 +1,15 @@
 // exporter.js — centrado horizontal y vertical en celdas + encabezado institucional + merge jerárquico + párrafos
 // Solo afecta los productos finales (preview / Word / PDF). No toca la interfaz de edición.
-// Modificado: Header administrativo solo en primera página (con fuerza corte y .first-page para blindar)
+// Modificado: Header administrativo solo en primera página (con fuerza corte y .first-page blindado).
+// Fix: Definir Engine como window.PlannerEngine para evitar ReferenceError
 
 (function (global) {
+
+  const Engine = window.PlannerEngine;
+  if (!Engine) {
+    console.error("PlannerEngine no definido. Verifica planner-engine.js");
+    alert("PlannerEngine no cargado.");
+  }
 
   /* ========== Utilidades ========== */
 
