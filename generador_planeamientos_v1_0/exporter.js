@@ -64,7 +64,7 @@
       '.matriz th:first-child,.matriz td:first-child{text-align:left;}' + // Ajustes adicionales si necesario
       // Nuevo CSS para print: Admin + título en p1, fuerza corte después para p2+
       '@media print {' +
-      '  @page { size: letter; margin: 2cm; }' +
+      '  @page { size: letter landscape; margin: 2cm; }' +
       '  .first-page { page-break-after: always; }' + // Fuerza corte después de admin + título
       '  table { page-break-inside: auto; }' +
       '  tr { page-break-inside: avoid; page-break-after: auto; }' +
