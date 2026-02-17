@@ -57,7 +57,7 @@
       '<style>' +
       'body{font-family:Arial,Helvetica,sans-serif;font-size:11pt;line-height:1.2;margin:20px;}' +
       '.portada{' +
-      '  height: 90vh;' +
+      '  height: 100vh;' +
       '  display:flex;' +
       '  flex-direction:column;' +
       '  justify-content:center;' +
@@ -109,6 +109,8 @@
       htmlAdmin(acad, "academico") +
      '<h1>Planeamiento Académico</h1>' +
      '</div>' +
+
+     '<div style="page-break-after:always;"></div>' +
 
      '<table class="matriz">' +
       '<thead><tr>' +
