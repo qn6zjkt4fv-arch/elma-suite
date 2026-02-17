@@ -57,7 +57,7 @@
       '<style>' +
       'body{font-family:Arial,Helvetica,sans-serif;font-size:11pt;line-height:1.2;margin:20px;}' +
       '.portada{' +
-      '  height: 100vh;' +
+      '  min-height: 80vh;' +
       '  display:flex;' +
       '  flex-direction:column;' +
       '  justify-content:center;' +
@@ -76,9 +76,8 @@
       // Nuevo CSS para print: Admin + título en p1, fuerza corte después para p2+
       '@media print {' +
       '  @page { size: letter landscape; margin: 1.5cm; }' +
-      '  .first-page { page-break-after: always; }' +
       '  table { page-break-inside: auto; }' +
-      '  tr { page-break-inside: avoid; page-break-after: auto; }' +
+      '  tr { page-break-inside: avoid; }' +
       '}' +
 
       '</style>' +
@@ -105,13 +104,11 @@
 
   function htmlAcademico(acad) {
   let html =
-     '<div class="first-page portada">' +
+     '<div class="portada">' +
       htmlAdmin(acad, "academico") +
      '<h1>Planeamiento Académico</h1>' +
      '</div>' +
-
      '<div style="page-break-after:always;"></div>' +
-
      '<table class="matriz">' +
       '<thead><tr>' +
       '<th>Unidad</th><th>Objetivo general</th><th>Objetivo específico</th><th>Contenidos</th><th>Estrategias de mediación</th><th>Tiempo</th>' +
