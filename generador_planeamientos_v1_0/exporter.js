@@ -108,8 +108,8 @@
       htmlAdmin(acad, "academico") +
      '<h1>Planeamiento Académico</h1>' +
      '</div>' +
-     '<div style="page-break-after:always;"></div>' +
      '<table class="matriz">' +
+    
       '<thead><tr>' +
       '<th>Unidad</th><th>Objetivo general</th><th>Objetivo específico</th><th>Contenidos</th><th>Estrategias de mediación</th><th>Tiempo</th>' +
       '</tr></thead><tbody>';
