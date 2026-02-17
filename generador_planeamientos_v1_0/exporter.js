@@ -57,7 +57,7 @@
       '<style>' +
       'body{font-family:Arial,Helvetica,sans-serif;font-size:11pt;line-height:1.2;margin:20px;}' +
       '.portada{' +
-      '  min-height: 80vh;' +
+      '  min-height: 100vh;' +
       '  display:flex;' +
       '  flex-direction:column;' +
       '  justify-content:center;' +
@@ -76,6 +76,7 @@
       // Nuevo CSS para print: Admin + título en p1, fuerza corte después para p2+
       '@media print {' +
       '  @page { size: letter landscape; margin: 1.5cm; }' +
+      '  .portada { height:auto; min-height:auto; }' +
       '  table { page-break-inside: auto; }' +
       '  tr { page-break-inside: avoid; }' +
       '}' +
