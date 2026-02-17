@@ -47,6 +47,18 @@ document.addEventListener("DOMContentLoaded", function () {
     attachTableListeners(); // Adjunta listeners cada vez que cambias modo
   }
 
+// BOTONES DE BIENVENIDA
+   const btnStartDid = document.getElementById("start-did");
+   const btnStartAcad = document.getElementById("start-acad");
+
+if (btnStartDid) {
+  btnStartDid.onclick = () => switchMode("didactico");
+}
+
+if (btnStartAcad) {
+  btnStartAcad.onclick = () => switchMode("academico");
+}
+
   // Función para adjuntar listeners a las tablas (con logs para debug)
   function attachTableListeners() {
     const btnAddAcad = document.getElementById("acad-add-row");
