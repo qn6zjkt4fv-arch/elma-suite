@@ -142,15 +142,21 @@
     return html;
   }
 
-  function build(mode) {
-    const state = Engine.loadAll();
-    if (!state || !state[mode]) return null;
+function build(mode) {
+  const state = {
+    academico: Engine.readAcademicoFromDOM(),
+    didactico: Engine.readDidacticoFromDOM()
+  };
 
-    const data = state[mode];
-    const content = (mode === "academico" ? htmlAcademico(data) : htmlDidactico(data));
+  const data = state[mode];
+  if (!data) return null;
 
-    return baseHead() + content + '</body></html>';
-  }
+  const content = (mode === "academico")
+    ? htmlAcademico(data)
+    : htmlDidactico(data);
+
+  return baseHead() + content + '</body></html>';
+}
 
   function preview(mode) {
     try {
