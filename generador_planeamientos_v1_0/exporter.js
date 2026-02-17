@@ -56,6 +56,15 @@
       '<meta charset="UTF-8"><title>Planeamiento</title>' +
       '<style>' +
       'body{font-family:Arial,Helvetica,sans-serif;font-size:11pt;line-height:1.2;margin:20px;}' +
+      '.portada{' +
+      '  height: 90vh;' +
+      '  display:flex;' +
+      '  flex-direction:column;' +
+      '  justify-content:center;' +
+      '  align-items:center;' +
+      '  text-align:center;' +
+      '}' +
+
       'h1{text-align:center;margin:20px 0;}' +
       'table{border-collapse:collapse;width:100%;}' +
       'th,td{border:1px solid #000;padding:8px;vertical-align:middle;text-align:center;}' +
@@ -67,10 +76,9 @@
       // Nuevo CSS para print: Admin + título en p1, fuerza corte después para p2+
       '@media print {' +
       '  @page { size: letter landscape; margin: 1.5cm; }' +
+      '  .first-page { page-break-after: always; }' +
       '  table { page-break-inside: auto; }' +
       '  tr { page-break-inside: avoid; page-break-after: auto; }' +
-      '  thead { display: table-header-group; }' +
-      '  tfoot { display: table-footer-group; }' +
       '}' +
 
       '</style>' +
@@ -96,11 +104,13 @@
   }
 
   function htmlAcademico(acad) {
-    let html = '<div class="first-page">' + // Wrap admin + h1 para corte after
+  let html =
+     '<div class="first-page portada">' +
       htmlAdmin(acad, "academico") +
-      '<h1>Planeamiento Académico</h1>' +
-      '</div>' +
-      '<table class="matriz">' +
+     '<h1>Planeamiento Académico</h1>' +
+     '</div>' +
+
+     '<table class="matriz">' +
       '<thead><tr>' +
       '<th>Unidad</th><th>Objetivo general</th><th>Objetivo específico</th><th>Contenidos</th><th>Estrategias de mediación</th><th>Tiempo</th>' +
       '</tr></thead><tbody>';
