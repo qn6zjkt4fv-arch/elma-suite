@@ -90,34 +90,43 @@ if (btnStartAcad) {
 
   // Guardado (local + con nombre) / Carga
   // ─────────────────────────────────────────
-  function saveAll() {
-    const useNamed = confirm("¿Deseas guardar este planeamiento con un nombre (para manejar varios)?");
-    if (useNamed && Engine.savePlanWithName) {
-      const name = prompt("Nombre del planeamiento (ej: 'Química 10° - I Semestre'):");
-      if (name && name.trim()) {
-        const trimmed = name.trim();
-        const res = Engine.savePlanWithName(trimmed, currentMode);
-        if (res) {
-          setStatus(`Planeamiento guardado como: "${trimmed}".`);
-          try { fillPlanPicker(); } catch {}
-          return;
-        } else {
-          setStatus("No se pudo guardar con nombre. Se utilizará el guardado simple.", false);
-        }
-      }
+function saveAll() {
+  const state = {
+    mode: currentMode,
+    academico: Engine.readAcademicoFromDOM(),
+    didactico: Engine.readDidacticoFromDOM()
+  };
+
+  // 1️⃣ Respaldo interno
+  localStorage.setItem("planeamiento_integrado_v1", JSON.stringify(state));
+
+  // 2️⃣ Guardado múltiple interno (si existe)
+  if (Engine.savePlanWithName) {
+    const nameInternal = prompt("Nombre interno del planeamiento (opcional):");
+    if (nameInternal && nameInternal.trim()) {
+      Engine.savePlanWithName(nameInternal.trim(), currentMode);
     }
-    const state = Engine.saveAll(currentMode);
-    const errs = [
-      ...Engine.validateAcademico(state.academico),
-      ...Engine.validateDidactico(state.didactico)
-    ];
-    if (errs.length) {
-      setStatus("Guardado con observaciones: " + errs.join(" | "), false);
-    } else {
-      setStatus("Planeamiento guardado localmente.");
-    }
-    try { fillPlanPicker(); } catch {}
   }
+
+  // 3️⃣ Archivo físico real
+  const fileName = prompt("Nombre del archivo para descargar:", "Planeamiento");
+  if (!fileName) return;
+
+  const blob = new Blob(
+    [JSON.stringify(state, null, 2)],
+    { type: "application/json" }
+  );
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+
+  setStatus("Planeamiento guardado en Descargas.");
+}
+
 
   function loadAll() {
     const st = Engine.loadAll();
