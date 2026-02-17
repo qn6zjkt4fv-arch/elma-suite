@@ -55,22 +55,24 @@
       '<!DOCTYPE html><html><head>' +
       '<meta charset="UTF-8"><title>Planeamiento</title>' +
       '<style>' +
-      'body{font-family:Arial,Helvetica,sans-serif;font-size:12pt;line-height:1.3;margin:30px;}' +
+      'body{font-family:Arial,Helvetica,sans-serif;font-size:11pt;line-height:1.2;margin:20px;}' +
+      'h1{text-align:center;margin:20px 0;}' +
       'table{border-collapse:collapse;width:100%;}' +
       'th,td{border:1px solid #000;padding:8px;vertical-align:middle;text-align:center;}' +
       'th{background:#f2f2f2;}' +
       'p{margin:4px 0;}' +
       '.admin{margin-bottom:20px;text-align:center;}' +
       '.matriz th:first-child,.matriz td:first-child{text-align:left;}' + // Ajustes adicionales si necesario
+      '.matriz{font-size:10pt;}' +
       // Nuevo CSS para print: Admin + título en p1, fuerza corte después para p2+
       '@media print {' +
-      '  @page { size: letter landscape; margin: 2cm; }' +
-      '  .first-page { page-break-after: always; }' + // Fuerza corte después de admin + título
+      '  @page { size: letter landscape; margin: 1.5cm; }' +
       '  table { page-break-inside: auto; }' +
       '  tr { page-break-inside: avoid; page-break-after: auto; }' +
-      '  thead { display: table-header-group; }' + // Repite solo columnas en p2+
+      '  thead { display: table-header-group; }' +
       '  tfoot { display: table-footer-group; }' +
       '}' +
+
       '</style>' +
       '</head><body>'
     );
