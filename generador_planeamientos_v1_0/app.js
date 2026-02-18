@@ -253,39 +253,53 @@ function saveAll() {
     reader.readAsText(file);
   };
 
-  // Exportar indicadores (didáctico) – fix selector con name
-  const btnExportIndicadores = document.getElementById("did-export-indicadores");
-  if (btnExportIndicadores) {
-    btnExportIndicadores.onclick = () => {
-      console.log("Clic en export indicadores llamado");
-      try {
-        const indicadores = [...didSection().querySelectorAll('textarea[name="did-indicadores"]')].map(ta => ta.value.trim()).filter(Boolean);
-        if (!indicadores.length) {
-          alert("No hay indicadores para exportar.");
-          return;
-        }
+// ─────────────────────────────────────────
+// EXPORTAR INDICADORES A RÚBRICAS — VERSIÓN DEFINITIVA
+// ─────────────────────────────────────────
+const btnExportIndicadores = document.getElementById("did-export-indicadores");
 
-        localStorage.setItem(
-          "ELMA_EXPORT_INDICADORES",
-          JSON.stringify(indicadores)
-        );
+if (btnExportIndicadores) {
+  btnExportIndicadores.onclick = () => {
+    try {
+      // Usamos el motor oficial (más confiable que buscar textareas)
+      const did = Engine.readDidacticoFromDOM();
 
-        window.location.href = "../Rubricas_ELMA_Secundaria_v1_1_2/index.html";
+      const indicadores = did.matriz
+        .map(row => (row.indicadores || "").trim())
+        .filter(txt => txt.length > 0);
 
-      } catch (err) {
-        console.error("Error exportando indicadores:", err);
-        alert("Ocurrió un error al exportar los indicadores.");
+      if (indicadores.length === 0) {
+        alert("No hay indicadores para exportar.");
+        return;
       }
-    };
-    console.log("Listener adjuntado a did-export-indicadores");
+
+      // Payload completo que espera rubric-engine.js
+      const payload = {
+        version: 1,
+        source: "planeamiento-didactico",
+        updatedAt: new Date().toISOString(),
+        docente: did.docente || "",
+        asignatura: did.asignatura || "",
+        tema: did.tema || "",
+        nivel: did.nivel || "",
+        criterios: indicadores
+      };
+
+      localStorage.setItem("elma_rubric_transfer_v1", JSON.stringify(payload));
+
+      console.log("✅ Indicadores exportados correctamente:", indicadores.length);
+
+      // Redirección a rúbricas
+      window.location.href = "../Rubricas_ELMA_Secundaria_v1_1_2/index.html";
+
+    } catch (err) {
+      console.error("Error exportando indicadores:", err);
+      alert("Ocurrió un error al exportar los indicadores.");
+    }
   };
 
-  // picker – comentado temporalmente porque funciones no definidas (descomenta cuando las agregues)
-  // const planPicker = document.getElementById("plan-picker");
-  // const btnOpenPlan = document.getElementById("btn-open-plan");
-  // if (btnOpenPlan) btnOpenPlan.onclick = openSelectedPlan;
-  // const btnRefreshPlans = document.getElementById("btn-refresh-plans");
-  // if (btnRefreshPlans) btnRefreshPlans.onclick = fillPlanPicker;
+  console.log("Listener de exportar indicadores adjuntado correctamente");
+}
 
   // estado inicial
   const st = Engine.loadAll();

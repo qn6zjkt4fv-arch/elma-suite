@@ -75,8 +75,8 @@
   window.getArchiveDirectory = getArchiveDirectory;
   window.downloadAsJSON = downloadAsJSON;
 
-  /* ============================================================
-     🔵 IMPORTAR INDICADORES DESDE PLANEAMIENTOS (ELMA) — sin cambios
+   /* ============================================================
+     🔵 IMPORTAR INDICADORES DESDE PLANEAMIENTOS (ELMA) — CORREGIDO
      ============================================================ */
 
   document.addEventListener("DOMContentLoaded", () => {
@@ -86,10 +86,12 @@
     if (btnImportFromPlan) {
       btnImportFromPlan.addEventListener("click", () => {
         try {
-          const raw = localStorage.getItem("ELMA_EXPORT_INDICADORES");
+          // KEY UNIFICADA (la misma que usa planeamiento y rubric-engine.js)
+          const raw = localStorage.getItem("elma_rubric_transfer_v1");
 
           if (!raw) {
-            alert("No hay indicadores exportados desde el planeamiento didáctico.");
+            alert("No hay indicadores exportados desde el planeamiento didáctico.\n\n" +
+                  "Primero exporta los indicadores desde el módulo de planeamiento.");
             return;
           }
 
@@ -102,16 +104,22 @@
 
           console.log("📥 Importando indicadores desde planeamientos:", indicadores);
 
+          const criteriaList = document.getElementById("criteria-list");
+          if (!criteriaList) {
+            alert("No se encontró el área de criterios para agregar los indicadores.");
+            return;
+          }
+
+          // Usamos la función real de rubric-engine.js
           indicadores.forEach(texto => {
-            if (typeof addCriterion === "function") {
-              addCriterion(texto);
-            } else {
-              console.warn("addCriterion no está disponible.");
-            }
+            const row = createCriterionRow({ criterio: texto.trim() });
+            criteriaList.appendChild(row);
           });
 
-          // Limpiar para evitar importaciones duplicadas
-          localStorage.removeItem("ELMA_EXPORT_INDICADORES");
+          document.dispatchEvent(new Event("elma-ensure-verb-bind"));
+
+          // Limpiar para evitar duplicados
+          localStorage.removeItem("elma_rubric_transfer_v1");
 
           alert("📌 Indicadores importados correctamente desde el planeamiento.");
 
