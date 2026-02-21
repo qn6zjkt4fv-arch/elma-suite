@@ -145,11 +145,55 @@ async function sha256(text) {
         .map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-
 // ====================================================
-//  GUARDAR NUEVO USUARIO O EDIC
+//  GUARDAR NUEVO USUARIO O EDICIÓN
+// ====================================================
+async function saveAdminUser() {
+  const name = document.getElementById("adminNameInput").value.trim();
+  const level = document.getElementById("adminLevelInput").value;
 
-function initAdmin() {
-    renderUsersTable();
+  if (!name) {
+    alert("❌ Debes escribir el nombre completo del usuario.");
+    return;
+  }
+
+  // Generar código institucional
+  const code = generateInstitutionalCode(name, level);
+  if (!code) {
+    alert("❌ No se pudo generar el código institucional.");
+    return;
+  }
+
+  // Verificar si ya existe
+  if (findUserByCode(code)) {
+    alert(`❌ Ya existe un usuario con el código ${code}.`);
+    return;
+  }
+
+  // Crear nuevo usuario
+  const newUser = {
+    code: code,
+    name: toTitleCase(name),
+    level: level
+  };
+
+  // Agregar a las listas
+  ADMIN_TEMP_USERS.push(newUser);
+  ELMA_USERS.push(newUser);
+
+  // Guardar en localStorage para que persista
+  localStorage.setItem("ELMA_USERS_OVERRIDE", JSON.stringify(ELMA_USERS));
+
+  alert(`✅ Usuario creado correctamente:\n\nCódigo: ${code}\nNombre: ${newUser.name}`);
+
+  closeAdminModal();
+  renderAdminTable();   // Refresca la tabla
 }
 
+// ====================================================
+//  INICIALIZACIÓN DEL PANEL ADMIN
+// ====================================================
+function initAdmin() {
+  ADMIN_TEMP_USERS = JSON.parse(JSON.stringify(ELMA_USERS)); // copia profunda
+  renderAdminTable();
+}
