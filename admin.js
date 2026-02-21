@@ -96,31 +96,36 @@ function closeAdminModal() {
 
 
 // ====================================================
-//  GENERACIÓN AUTOMÁTICA DE CÓDIGO INSTITUCIONAL
+//  GENERACIÓN AUTOMÁTICA DE CÓDIGO INSTITUCIONAL (versión mejorada)
 // ====================================================
-function generateInstitutionalCode(name, level) {
-    const clean = name.trim().toUpperCase()
-        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^A-Z\s]/g, "");
+function generateInstitutionalCode(fullName, level) {
+  if (!fullName || fullName.trim() === "") {
+    return null;
+  }
 
-    const parts = clean.split(" ");
-    const apellido = parts[0] || "";
-    const nombre = parts[1] || "";
+  const clean = fullName.trim().toUpperCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^A-Z\s]/g, "");
 
-    if (apellido.length === 0 || nombre.length === 0) return null;
+  const parts = clean.split(/\s+/).filter(Boolean);
 
-    let base = "";
+  if (parts.length < 1) return null;
 
-    if (apellido.length >= 5) {
-        base = apellido.substring(0, 5) + nombre.substring(0, 1);
-    } else if (apellido.length === 4) {
-        base = apellido.substring(0, 4) + nombre.substring(0, 2);
-    } else {
-        const needed = 5 - apellido.length;
-        base = apellido + nombre.substring(0, needed);
-    }
+  let apellido = parts[0] || "";
+  let nombre   = parts[1] || parts[0];   // Si solo hay una palabra, usamos la misma
 
-    return `${level}-${base}2026`;
+  // Si el apellido es muy corto, tomamos más letras del nombre
+  let base = "";
+  if (apellido.length >= 5) {
+    base = apellido.substring(0, 5) + nombre.substring(0, 1);
+  } else if (apellido.length === 4) {
+    base = apellido + nombre.substring(0, 1);
+  } else {
+    const needed = 5 - apellido.length;
+    base = apellido + nombre.substring(0, needed);
+  }
+
+  return `${level}-${base}2026`;
 }
 
 
