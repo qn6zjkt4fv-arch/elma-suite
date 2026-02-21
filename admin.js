@@ -197,3 +197,14 @@ function initAdmin() {
   ADMIN_TEMP_USERS = JSON.parse(JSON.stringify(ELMA_USERS)); // copia profunda
   renderAdminTable();
 }
+
+// ====================================================
+//  CONECTAR BOTÓN "Guardar" DEL MODAL
+// ====================================================
+document.addEventListener("DOMContentLoaded", () => {
+  const saveBtn = document.getElementById("btn-save-admin-user");
+  if (saveBtn) {
+    saveBtn.addEventListener("click", saveAdminUser);
+    console.log("✅ Listener de saveAdminUser adjuntado correctamente");
+  }
+});
