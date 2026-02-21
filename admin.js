@@ -96,35 +96,49 @@ function closeAdminModal() {
 
 
 // ====================================================
-//  GENERACIÓN AUTOMÁTICA DE CÓDIGO INSTITUCIONAL (versión mejorada)
+//  GENERACIÓN AUTOMÁTICA DE CÓDIGO INSTITUCIONAL (VERSIÓN FINAL - NO FALLA)
 // ====================================================
 function generateInstitutionalCode(fullName, level) {
   if (!fullName || fullName.trim() === "") {
     return null;
   }
 
+  // Limpiar y normalizar nombre (quitar acentos, mayúsculas)
   const clean = fullName.trim().toUpperCase()
     .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .replace(/[^A-Z\s]/g, "");
 
   const parts = clean.split(/\s+/).filter(Boolean);
 
-  if (parts.length < 1) return null;
+  if (parts.length === 0) return null;
 
-  let apellido = parts[0] || "";
-  let nombre   = parts[1] || parts[0];   // Si solo hay una palabra, usamos la misma
+  // Tomamos el primer "apellido" (última palabra) y el "nombre" (primera palabra)
+  let apellido = parts[parts.length - 1] || "";
+  let nombre   = parts[0] || apellido;  // Si solo hay una palabra, usamos la misma
 
-  // Si el apellido es muy corto, tomamos más letras del nombre
+  // Si no hay suficiente longitud, usamos lo que haya
   let base = "";
+
+  // Prioridad: 5 letras del apellido + 1 del nombre
   if (apellido.length >= 5) {
     base = apellido.substring(0, 5) + nombre.substring(0, 1);
-  } else if (apellido.length === 4) {
+  }
+  // Si apellido tiene 4 letras, tomamos todo + 1 del nombre
+  else if (apellido.length === 4) {
     base = apellido + nombre.substring(0, 1);
-  } else {
-    const needed = 5 - apellido.length;
+  }
+  // Si apellido muy corto (3 o menos), tomamos todo apellido + resto del nombre hasta 6 chars
+  else {
+    const needed = 6 - apellido.length;
     base = apellido + nombre.substring(0, needed);
   }
 
+  // Si después de todo sigue corto, completamos con la primera letra repetida
+  if (base.length < 6) {
+    base += nombre.charAt(0).repeat(6 - base.length);
+  }
+
+  // Código final
   return `${level}-${base}2026`;
 }
 
