@@ -75,8 +75,8 @@
   window.getArchiveDirectory = getArchiveDirectory;
   window.downloadAsJSON = downloadAsJSON;
 
-   /* ============================================================
-     🔵 IMPORTAR INDICADORES DESDE PLANEAMIENTOS (ELMA) — CORREGIDO
+  /* ============================================================
+     🔵 IMPORTAR INDICADORES DESDE PLANEAMIENTOS (ELMA) — VERSIÓN FINAL
      ============================================================ */
 
   document.addEventListener("DOMContentLoaded", () => {
@@ -86,7 +86,6 @@
     if (btnImportFromPlan) {
       btnImportFromPlan.addEventListener("click", () => {
         try {
-          // KEY UNIFICADA (la misma que usa planeamiento y rubric-engine.js)
           const raw = localStorage.getItem("elma_rubric_transfer_v1");
 
           if (!raw) {
@@ -95,22 +94,27 @@
             return;
           }
 
-          const indicadores = JSON.parse(raw);
+          const payload = JSON.parse(raw);
+
+          // Soporta tanto el formato viejo (array directo) como el nuevo (objeto con .criterios)
+          const indicadores = Array.isArray(payload) 
+            ? payload 
+            : (payload.criterios || []);
 
           if (!Array.isArray(indicadores) || indicadores.length === 0) {
-            alert("Los indicadores exportados están vacíos o dañados.");
+            alert("Los indicadores exportados están vacíos o en formato incorrecto.");
             return;
           }
 
-          console.log("📥 Importando indicadores desde planeamientos:", indicadores);
+          console.log("📥 Importando indicadores:", indicadores);
 
           const criteriaList = document.getElementById("criteria-list");
           if (!criteriaList) {
-            alert("No se encontró el área de criterios para agregar los indicadores.");
+            alert("No se encontró el área de criterios.");
             return;
           }
 
-          // Usamos la función real de rubric-engine.js
+          // Agregar como criterios reales
           indicadores.forEach(texto => {
             const row = createCriterionRow({ criterio: texto.trim() });
             criteriaList.appendChild(row);
@@ -118,10 +122,10 @@
 
           document.dispatchEvent(new Event("elma-ensure-verb-bind"));
 
-          // Limpiar para evitar duplicados
+          // Limpiar después de importar
           localStorage.removeItem("elma_rubric_transfer_v1");
 
-          alert("📌 Indicadores importados correctamente desde el planeamiento.");
+          alert(`📌 Se importaron ${indicadores.length} indicadores correctamente.`);
 
         } catch (err) {
           console.error("⚠️ Error al importar indicadores:", err);
