@@ -264,12 +264,18 @@ function showMenu(user) {
   loginCard.style.display = "none";
   menuCard.style.display = "block";
   currentUser = user;
-  const displayName = toTitleCase(user.name);
+
+  const displayName = toTitleCase(user.name || "");
   menuSubtitle.textContent = `Bienvenido(a), ${displayName}. Herramientas académicas para planeamientos y rúbricas.`;
-  if (user.code === "S-ADMIN2026") {
-    document.getElementById("admin-panel-button").style.display = "block";
+
+  // 🔥 SOLO el administrador ve el botón de "Administración de Usuarios"
+  const adminButton = document.getElementById("admin-panel-button");
+  if (adminButton) {
+    adminButton.style.display = (user.code === "S-ADMIN2026") ? "block" : "none";
   }
-  if (user.code === ADMIN_CODE && !document.getElementById("elma-admin-recovery")) {
+
+  // Botón de recuperación de contraseñas (solo para admin)
+  if (user.code === "S-ADMIN2026" && !document.getElementById("elma-admin-recovery")) {
     const cont = document.createElement("div");
     cont.style.marginTop = "20px";
     cont.innerHTML = `
@@ -283,7 +289,10 @@ function showMenu(user) {
       elma_showAdminRecovery();
     };
   }
+
+  console.log(`✅ Sesión iniciada como: ${user.code} (${displayName})`);
 }
+
 
 function showLogin() {
   currentUser = null;
